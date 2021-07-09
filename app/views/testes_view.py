@@ -1,7 +1,4 @@
-from http import HTTPStatus
-
-from app import db
-from flask import Blueprint, request
+from flask import Blueprint
 
 bp = Blueprint('bp_testes', __name__)
 
