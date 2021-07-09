@@ -17,7 +17,7 @@ def create_app():
     # commands.init_app(app)
     database.init_app(app)
     migrations.init_app(app)
-    views.init_app(app)
+   #  views.init_app(app)
 
     return app
 
