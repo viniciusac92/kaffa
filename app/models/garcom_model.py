@@ -1,4 +1,6 @@
 from sqlalchemy import Column, String, Integer
+from sqlalchemy.orm import relationship, backref
+
 from app.configs.database import db
 from dataclasses import dataclass
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -14,6 +16,8 @@ class GarcomModel(db.Model):
     id = Column(Integer, primary_key=True)
     nome = Column(String(50), nullable=False)
     password_hash = Column(String)
+
+    lista_contas = relationship("ContaModel", backref=backref("garcom", uselist=False))
 
     @property
     def password(self):

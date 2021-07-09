@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship, backref
 
 from app.configs.database import db
 
+@dataclass
 class FormaPagamentoModel(db.Model):
     id: int
     descricao: str
@@ -11,3 +13,5 @@ class FormaPagamentoModel(db.Model):
 
     id = Column(Integer, primary_key=True)
     descricao = Column(String(50), nullable=False)
+
+    lista_contas = relationship("ContaModel", backref=backref("forma_pagamento", uselist=False))
