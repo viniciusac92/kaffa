@@ -6,7 +6,7 @@ from sqlalchemy.orm import backref, relationship
 
 
 @dataclass
-class ProdutoOrdemDeCompra(db.Model):
+class ProdutoOrdemDeCompraModel(db.Model):
     id: int
     id_ordem: int
     id_produto: int
@@ -19,7 +19,9 @@ class ProdutoOrdemDeCompra(db.Model):
     id_produto = Column(Integer, ForeignKey("produto.id"), nullable=False)
 
     ordem_de_compra = relationship(
-        'OrdemDeCompraModel', backref=backref('produto_ordem_de_compra'), uselist=False
+        'OrdemDeCompraModel', backref=backref('produtos_ordem_de_compra'), uselist=False
     )
 
-    produto = relationship('ProdutoModel', backref=backref('produto'), uselist=False)
+    produto = relationship(
+        'ProdutoModel', backref=backref('produtos_ordem_de_compra'), uselist=False
+    )

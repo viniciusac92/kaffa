@@ -7,7 +7,7 @@ from sqlalchemy.orm import backref, relationship
 
 
 @dataclass
-class OrdemDeCompra(db.Model):
+class OrdemDeCompraModel(db.Model):
     id: int
     id_fornecedor: int
     data: date
@@ -20,5 +20,5 @@ class OrdemDeCompra(db.Model):
     data = Column(DateTime, nullable=False)
 
     fornecedor = relationship(
-        'OrdemDeCompraModel', backref=backref('fornecedor'), uselist=False
+        'FornecedorModel', backref=backref('ordens_de_compra'), uselist=False
     )
