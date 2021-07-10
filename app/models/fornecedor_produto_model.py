@@ -15,7 +15,7 @@ class FornecedorProdutoModel(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    id_produto = Column(Integer, ForeignKey("produto.id"), nullable=False)
+    id_produto = Column(Integer, ForeignKey("produtos.id"), nullable=False)
     id_fornecedor = Column(Integer, ForeignKey("fornecedor.id"), nullable=False)
 
     produto = relationship(

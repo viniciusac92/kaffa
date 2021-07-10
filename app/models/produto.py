@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, DECIMAL
 from dataclasses import dataclass
 from sqlalchemy.orm import relationship, backref
 
@@ -14,5 +14,6 @@ class ProdutoModel(db.Model):
 
     id = Column(Integer, primary_key=True)
     descricao = Column(String(200), nullable=False)
+    preco = Column(DECIMAL, nullable=False)
 
     estoque = relationship("EstoqueProdutoModel", backref=backref("lista_produtos"), uselist=False)
