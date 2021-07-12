@@ -1,10 +1,10 @@
-from ..services import FornecedorServices
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
-
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask import Blueprint, request, jsonify
 from http import HTTPStatus
 
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
+
+from ..custom_errors import MissingKeyError, NotFoundError, RequiredKeyError
+from ..services import FornecedorServices
 
 bp = Blueprint('bp_fornecedor', __name__, url_prefix='/api')
 
@@ -33,10 +33,9 @@ def get():
             return jsonify(FornecedorServices.get_by_id(id))
 
         return jsonify(FornecedorServices.get_all_fornecedores()), HTTPStatus.OK
-    
+
     except NotFoundError as e:
         return e.message
-
 
 
 @bp.route("/fornecedor/<int:id>", methods=["PUT", "PATCH"])
@@ -45,7 +44,7 @@ def update(id):
     data = request.get_json()
 
     try:
-        return jsonify(FornecedorServices.update_fornecedor(data,id)), HTTPStatus.OK
+        return jsonify(FornecedorServices.update_fornecedor(data, id)), HTTPStatus.OK
 
     except NotFoundError as e:
         return e.message
@@ -65,4 +64,3 @@ def delete(id):
         return e.message
 
     return "", HTTPStatus.NO_CONTENT
-
