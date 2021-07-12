@@ -1,8 +1,8 @@
-"""empty message
+"""Recriação após views Leandro
 
-Revision ID: 4d83a18960dc
+Revision ID: f19308fab2a6
 Revises: 
-Create Date: 2021-07-11 21:03:56.731650
+Create Date: 2021-07-12 12:14:46.960276
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4d83a18960dc'
+revision = 'f19308fab2a6'
 down_revision = None
 branch_labels = None
 depends_on = None
