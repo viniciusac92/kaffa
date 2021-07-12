@@ -16,12 +16,5 @@ class ProdutoOrdemDeCompraModel(db.Model):
     id = Column(Integer, primary_key=True)
 
     id_ordem = Column(Integer, ForeignKey("ordem_de_compra.id"), nullable=False)
-    id_produto = Column(Integer, ForeignKey("produto.id"), nullable=False)
-
-    ordem_de_compra = relationship(
-        'OrdemDeCompraModel', backref=backref('produtos_ordem_de_compra'), uselist=False
-    )
-
-    produto = relationship(
-        'ProdutoModel', backref=backref('produtos_ordem_de_compra'), uselist=False
-    )
+    id_produto = Column(Integer, ForeignKey("produtos.id"), nullable=False)
+    

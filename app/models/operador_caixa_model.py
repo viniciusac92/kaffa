@@ -13,3 +13,4 @@ class OperadorCaixaModel(db.Model):
     id = Column(Integer, primary_key=True)
     id_operador = Column(Integer, ForeignKey("operadores.id"), nullable=False)
     id_caixa = Column(Integer, ForeignKey("caixas.id"), nullable=False)
+    

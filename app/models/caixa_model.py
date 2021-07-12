@@ -14,10 +14,6 @@ class CaixaModel(db.Model):
     valor_inicial = Column(Float, default=0.0)
     saldo = Column(Float)
 
-    #método para consolidar contas no caixa
-
-    #método para retirada de caixa
-
     
 
 

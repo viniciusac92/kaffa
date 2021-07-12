@@ -13,6 +13,6 @@ class MesaModel(db.Model):
     __tablename__ = "mesas"
 
     id = Column(Integer, primary_key=True)
-    numero = Column(Integer, nullable=False)
+    numero = Column(Integer, nullable=False, unique=True)
 
     lista_contas = relationship("ContaModel", backref=backref("mesa", uselist=False))

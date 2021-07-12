@@ -25,3 +25,4 @@ class ContaModel(db.Model):
     id_forma_pagamento = Column(Integer, ForeignKey("forma_pagamento.id"))
 
     lista_produtos = relationship("ProdutoModel", secondary="conta_produto", backref=backref("produtos.id"))
+    

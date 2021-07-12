@@ -19,6 +19,6 @@ class OrdemDeCompraModel(db.Model):
     id_fornecedor = Column(Integer, ForeignKey("fornecedor.id"), nullable=False)
     data = Column(DateTime, nullable=False)
 
-    fornecedor = relationship(
-        'FornecedorModel', backref=backref('ordens_de_compra'), uselist=False
+    lista_produtos = relationship(
+        'ProdutoModel', backref=backref('ordens_de_compra'), secondary='produto_ordem_de_compra'
     )
