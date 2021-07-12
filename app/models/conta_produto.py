@@ -7,6 +7,7 @@ class ContaProdutoModel(db.Model):
     id: int
     id_conta: int
     id_produto: int
+    quantidade: int
 
     __tablename__ = "conta_produto"
 

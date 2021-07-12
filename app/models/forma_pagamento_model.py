@@ -7,11 +7,13 @@ from app.configs.database import db
 @dataclass
 class FormaPagamentoModel(db.Model):
     id: int
+    nome: str
     descricao: str
 
     __tablename__ = "forma_pagamento"
 
     id = Column(Integer, primary_key=True)
-    descricao = Column(String(50), nullable=False)
+    nome = Column(String(50), nullable=False, unique=True)
+    descricao = Column(String(150), nullable=True)
 
     lista_contas = relationship("ContaModel", backref=backref("forma_pagamento", uselist=False))

@@ -19,6 +19,6 @@ class FornecedorModel(db.Model):
     cnpj = Column(String(18), nullable=False, unique=True)
     telefone = Column(String(12), nullable=False, unique=True)
 
-    fornecedor_produto_list = relationship(
-        'FornecedorProdutoModel', backref=backref('fornecedor')
+    lista_de_produtos = relationship(
+        'ProdutoModel', backref=backref('fornecedor'), secondary='fornecedor_produto'
     )

@@ -8,12 +8,9 @@ from app.configs.database import db
 class ProdutoModel(db.Model):
     id: int
     descricao: str
-    preco: float
 
     __tablename__ = "produtos"
 
     id = Column(Integer, primary_key=True)
+    nome = Column(String(50), nullable=False, unique=True)
     descricao = Column(String(200), nullable=False)
-    preco = Column(DECIMAL, nullable=False)
-
-    estoque = relationship("EstoqueProdutoModel", backref=backref("lista_produtos"), uselist=False)
