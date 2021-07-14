@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 67e950077269
+Revision ID: 144ef9fdc259
 Revises: 
-Create Date: 2021-07-12 23:52:09.699185
+Create Date: 2021-07-13 22:40:36.412579
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '67e950077269'
+revision = '144ef9fdc259'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -40,38 +40,17 @@ def upgrade():
     sa.UniqueConstraint('cnpj'),
     sa.UniqueConstraint('telefone')
     )
-    op.create_table('garcons',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('nome', sa.String(length=50), nullable=False),
-    sa.Column('cpf', sa.String(length=11), nullable=False),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('cpf')
-    )
-    op.create_table('gerentes',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('nome', sa.String(length=50), nullable=False),
-    sa.Column('cpf', sa.String(length=11), nullable=False),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('cpf')
-    )
     op.create_table('mesas',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('numero', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('numero')
     )
-    op.create_table('operadores',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('nome', sa.String(length=50), nullable=False),
-    sa.Column('cpf', sa.String(length=11), nullable=False),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('cpf')
-    )
     op.create_table('produtos',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('nome', sa.String(length=50), nullable=False),
-    sa.Column('descricao', sa.String(length=200), nullable=False),
-    sa.Column('preco', sa.DECIMAL(), nullable=False),
+    sa.Column('descricao', sa.String(length=200), nullable=True),
+    sa.Column('preco', sa.Float(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('nome')
     )
@@ -79,21 +58,9 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=50), nullable=False),
     sa.Column('tipo', sa.Integer(), nullable=False),
-    sa.Column('password_hash', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('contas',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('data', sa.Date(), nullable=False),
-    sa.Column('id_caixa', sa.Integer(), nullable=False),
-    sa.Column('id_garcom', sa.Integer(), nullable=False),
-    sa.Column('id_mesa', sa.Integer(), nullable=False),
-    sa.Column('id_forma_pagamento', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['id_caixa'], ['caixas.id'], ),
-    sa.ForeignKeyConstraint(['id_forma_pagamento'], ['forma_pagamento.id'], ),
-    sa.ForeignKeyConstraint(['id_garcom'], ['garcons.id'], ),
-    sa.ForeignKeyConstraint(['id_mesa'], ['mesas.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('password_hash', sa.String(), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('username')
     )
     op.create_table('estoque_produto',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -111,13 +78,35 @@ def upgrade():
     sa.ForeignKeyConstraint(['id_produto'], ['produtos.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('operador_caixa',
+    op.create_table('garcons',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('id_operador', sa.Integer(), nullable=False),
-    sa.Column('id_caixa', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['id_caixa'], ['caixas.id'], ),
-    sa.ForeignKeyConstraint(['id_operador'], ['operadores.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('nome', sa.String(length=50), nullable=False),
+    sa.Column('cpf', sa.String(length=11), nullable=False),
+    sa.Column('id_usuario', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['id_usuario'], ['usuarios.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('cpf'),
+    sa.UniqueConstraint('id_usuario')
+    )
+    op.create_table('gerentes',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('nome', sa.String(length=50), nullable=False),
+    sa.Column('cpf', sa.String(length=11), nullable=False),
+    sa.Column('id_usuario', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['id_usuario'], ['usuarios.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('cpf'),
+    sa.UniqueConstraint('id_usuario')
+    )
+    op.create_table('operadores',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('nome', sa.String(length=50), nullable=False),
+    sa.Column('cpf', sa.String(length=11), nullable=False),
+    sa.Column('id_usuario', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['id_usuario'], ['usuarios.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('cpf'),
+    sa.UniqueConstraint('id_usuario')
     )
     op.create_table('ordem_de_compra',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -126,13 +115,25 @@ def upgrade():
     sa.ForeignKeyConstraint(['id_fornecedor'], ['fornecedor.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('conta_produto',
+    op.create_table('contas',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('id_conta', sa.Integer(), nullable=False),
-    sa.Column('id_produto', sa.Integer(), nullable=False),
-    sa.Column('quantidade', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['id_conta'], ['contas.id'], ),
-    sa.ForeignKeyConstraint(['id_produto'], ['produtos.id'], ),
+    sa.Column('data', sa.Date(), nullable=False),
+    sa.Column('id_caixa', sa.Integer(), nullable=False),
+    sa.Column('id_garcom', sa.Integer(), nullable=False),
+    sa.Column('id_mesa', sa.Integer(), nullable=False),
+    sa.Column('id_forma_pagamento', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['id_caixa'], ['caixas.id'], ),
+    sa.ForeignKeyConstraint(['id_forma_pagamento'], ['forma_pagamento.id'], ),
+    sa.ForeignKeyConstraint(['id_garcom'], ['garcons.id'], ),
+    sa.ForeignKeyConstraint(['id_mesa'], ['mesas.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('operador_caixa',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id_operador', sa.Integer(), nullable=False),
+    sa.Column('id_caixa', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['id_caixa'], ['caixas.id'], ),
+    sa.ForeignKeyConstraint(['id_operador'], ['operadores.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('produto_ordem_de_compra',
@@ -143,24 +144,32 @@ def upgrade():
     sa.ForeignKeyConstraint(['id_produto'], ['produtos.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('conta_produto',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id_conta', sa.Integer(), nullable=False),
+    sa.Column('id_produto', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['id_conta'], ['contas.id'], ),
+    sa.ForeignKeyConstraint(['id_produto'], ['produtos.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_table('produto_ordem_de_compra')
     op.drop_table('conta_produto')
-    op.drop_table('ordem_de_compra')
+    op.drop_table('produto_ordem_de_compra')
     op.drop_table('operador_caixa')
-    op.drop_table('fornecedor_produto')
-    op.drop_table('estoque_produto')
     op.drop_table('contas')
-    op.drop_table('usuarios')
-    op.drop_table('produtos')
+    op.drop_table('ordem_de_compra')
     op.drop_table('operadores')
-    op.drop_table('mesas')
     op.drop_table('gerentes')
     op.drop_table('garcons')
+    op.drop_table('fornecedor_produto')
+    op.drop_table('estoque_produto')
+    op.drop_table('usuarios')
+    op.drop_table('produtos')
+    op.drop_table('mesas')
     op.drop_table('fornecedor')
     op.drop_table('forma_pagamento')
     op.drop_table('caixas')

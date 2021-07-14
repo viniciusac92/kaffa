@@ -7,7 +7,7 @@ update_model, delete_commit, verify_missing_key)
 
 class GerenteServices:
 
-    required_fields = ["nome", "cpf"]
+    required_fields = ["nome", "cpf", "id_usuario"]
 
     @staticmethod
     def create_gerente(data:dict):

@@ -12,7 +12,7 @@ class CaixaModel(db.Model):
 
     id = Column(Integer, primary_key=True)
     valor_inicial = Column(Float, default=0.0)
-    saldo = Column(Float)
+    saldo = Column(Float, default=0.0)
 
     
 

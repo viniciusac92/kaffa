@@ -14,7 +14,7 @@ def create():
     if get_jwt_identity()["tipo"] != 1:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
-    data = request.get_json()
+    data = request.get_json() 
 
     try:
         return jsonify(UserServices.create_user(data)), HTTPStatus.CREATED
