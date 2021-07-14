@@ -11,7 +11,10 @@ bp = Blueprint('bp_user', __name__, url_prefix='/api')
 @bp.route("/user", methods=["POST"])
 @jwt_required()
 def create():
-    data = request.get_json()
+    if get_jwt_identity()["tipo"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+
+    data = request.get_json() 
 
     try:
         return jsonify(UserServices.create_user(data)), HTTPStatus.CREATED
@@ -24,7 +27,11 @@ def create():
 
 
 @bp.route("/user", methods=["GET"])
+@jwt_required()
 def get():
+    if get_jwt_identity()["tipo"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+        
     id = request.args.get("id")
     try:
         if id:
@@ -36,7 +43,11 @@ def get():
 
 
 @bp.route("/user/<int:id>", methods=["PUT", "PATCH"])
+@jwt_required()
 def update(id):
+    if get_jwt_identity()["tipo"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+        
     data = request.get_json()
 
     try:
@@ -50,7 +61,11 @@ def update(id):
 
 
 @bp.route("/user/<int:id>", methods=["DELETE"])
+@jwt_required()
 def delete(id):
+    if get_jwt_identity()["tipo"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+        
 
     try:
         UserServices.delete_user(id)

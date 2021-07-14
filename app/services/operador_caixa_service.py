@@ -7,7 +7,7 @@ update_model, delete_commit, verify_missing_key)
 
 class OperadorCaixaServices:
 
-    required_fields = ["id_operador", "id_caixa"]
+    required_fields = ["id_operador", "id_caixa", "data"]
 
     @staticmethod
     def create_operador_caixa(data:dict):
