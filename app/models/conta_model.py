@@ -14,6 +14,7 @@ class ContaModel(db.Model):
     id_garcom: int
     id_mesa: int
     id_forma_pagamento: int
+    lista_produtos: list
 
     __tablename__ = "contas"
 
@@ -22,7 +23,7 @@ class ContaModel(db.Model):
     id_caixa = Column(Integer, ForeignKey("caixas.id"), nullable=False)
     id_garcom = Column(Integer, ForeignKey("garcons.id"), nullable=False)
     id_mesa = Column(Integer, ForeignKey("mesas.id"), nullable=False)
-    id_forma_pagamento = Column(Integer, ForeignKey("forma_pagamento.id"))
+    id_forma_pagamento = Column(Integer, ForeignKey("forma_pagamento.id"), nullable=False)
 
-    lista_produtos = relationship("ProdutoModel", secondary="conta_produto", backref=backref("produtos.id"))
+    lista_produtos = relationship("ProdutoModel", secondary="conta_produto", backref=backref("contas_list"))
     

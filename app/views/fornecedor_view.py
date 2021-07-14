@@ -12,6 +12,9 @@ bp = Blueprint('bp_fornecedor', __name__, url_prefix='/api')
 @bp.route("/fornecedor", methods=["POST"])
 @jwt_required()
 def create():
+    if get_jwt_identity()["tipo"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+        
     data = request.get_json()
 
     try:
@@ -27,6 +30,9 @@ def create():
 @bp.route("/fornecedor", methods=["GET"])
 @jwt_required()
 def get():
+    if get_jwt_identity()["tipo"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+        
     id = request.args.get("id")
     try:
         if id:
@@ -41,6 +47,9 @@ def get():
 @bp.route("/fornecedor/<int:id>", methods=["PUT", "PATCH"])
 @jwt_required()
 def update(id):
+    if get_jwt_identity()["tipo"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+        
     data = request.get_json()
 
     try:
@@ -56,6 +65,9 @@ def update(id):
 @bp.route("/fornecedor/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete(id):
+    if get_jwt_identity()["tipo"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+        
 
     try:
         FornecedorServices.delete_fornecedor(id)

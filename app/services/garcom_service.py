@@ -8,7 +8,7 @@ from ipdb import set_trace
 
 class GarcomServices:
 
-    required_fields = ["nome", "cpf"]
+    required_fields = ["nome", "cpf", "id_usuario"] 
 
     @staticmethod
     def create_garcom(data:dict):

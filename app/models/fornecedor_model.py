@@ -11,6 +11,7 @@ class FornecedorModel(db.Model):
     nome_fantasia: str
     cnpj: str
     telefone: str
+    lista_de_produtos: list
 
     __tablename__ = 'fornecedor'
 
@@ -20,5 +21,5 @@ class FornecedorModel(db.Model):
     telefone = Column(String(12), nullable=False, unique=True)
 
     lista_de_produtos = relationship(
-        'ProdutoModel', backref=backref('fornecedor'), secondary='fornecedor_produto'
+        'ProdutoModel', backref=backref('fornecedor_list'), secondary='fornecedor_produto'
     )

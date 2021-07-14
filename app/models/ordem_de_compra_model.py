@@ -11,6 +11,7 @@ class OrdemDeCompraModel(db.Model):
     id: int
     id_fornecedor: int
     data: date
+    lista_produtos: list
 
     __tablename__ = 'ordem_de_compra'
 
@@ -20,5 +21,5 @@ class OrdemDeCompraModel(db.Model):
     data = Column(DateTime, nullable=False)
 
     lista_produtos = relationship(
-        'ProdutoModel', backref=backref('ordens_de_compra'), secondary='produto_ordem_de_compra'
+        'ProdutoModel', backref=backref('ordem_de_compra_list'), secondary='produto_ordem_de_compra'
     )

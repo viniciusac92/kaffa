@@ -14,9 +14,9 @@ class UserModel(db.Model):
     __tablename__ = "usuarios"
 
     id = Column(Integer, primary_key=True)
-    username = Column(String(50), nullable=False)
+    username = Column(String(50), nullable=False, unique=True)
     tipo = Column(Integer, nullable=False)
-    password_hash = Column(String)
+    password_hash = Column(String, nullable=False)
 
     @property
     def password(self):
