@@ -1,20 +1,18 @@
 from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship, backref
+
 from app.configs.database import db
 from dataclasses import dataclass
+from werkzeug.security import check_password_hash, generate_password_hash
 
 @dataclass
-class OperadorModel(db.Model):
+class GerenteModel(db.Model):
     id: int
     nome: str
-    cpf: str
-    lista_caixas: list
 
-    __tablename__ = "operadores"
+    __tablename__ = "gerentes"
 
     id = Column(Integer, primary_key=True)
     nome = Column(String(50), nullable=False)
     cpf = Column(String(11), nullable=False, unique=True)
     id_usuario = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
-
-    lista_caixas = relationship("CaixaModel", backref=backref("operadores_list"), secondary="operador_caixa")

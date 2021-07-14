@@ -9,10 +9,11 @@ from app.configs.database import db
 class MesaModel(db.Model):
     id: int
     numero: int
+    lista_contas: list
 
     __tablename__ = "mesas"
 
     id = Column(Integer, primary_key=True)
-    numero = Column(Integer, nullable=False)
+    numero = Column(Integer, nullable=False, unique=True)
 
-    lista_contas = relationship("ContaModel", backref=backref("mesa", uselist=False))
+    lista_contas = relationship("ContaModel", backref=backref("mesa"))

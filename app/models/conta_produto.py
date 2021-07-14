@@ -13,4 +13,3 @@ class ContaProdutoModel(db.Model):
     id = Column(Integer, primary_key=True)
     id_conta = Column(Integer, ForeignKey("contas.id"), nullable=False)
     id_produto = Column(Integer, ForeignKey("produtos.id"), nullable=False)
-    quantidade = Column(Integer, nullable=False)

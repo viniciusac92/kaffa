@@ -12,11 +12,7 @@ class CaixaModel(db.Model):
 
     id = Column(Integer, primary_key=True)
     valor_inicial = Column(Float, default=0.0)
-    saldo = Column(Float)
-
-    #método para consolidar contas no caixa
-
-    #método para retirada de caixa
+    saldo = Column(Float, default=0.0)
 
     
 

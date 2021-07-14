@@ -13,7 +13,5 @@ class EstoqueProdutoModel(db.Model):
     __tablename__ = "estoque_produto"
 
     id = Column(Integer, primary_key=True)
-    id_produto = Column(Integer, ForeignKey("produtos.id"), nullable=False)
+    id_produto = Column(Integer, ForeignKey("produtos.id"), nullable=False, unique=True)
     quantidade = Column(Integer, nullable=False)
-
-    # método pra calcular quantidade?
