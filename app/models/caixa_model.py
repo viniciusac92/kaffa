@@ -31,5 +31,5 @@ class CaixaModel(db.Model):
     def remove_from_balance(self, value):
         self.saldo = self.saldo - value
 
-    # ver onde incluir essa alteração
-    # update_model(instância_caixa, {"saldo": caixa.update_balance_all_bills() })
+
+

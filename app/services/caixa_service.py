@@ -27,12 +27,23 @@ class CaixaServices:
     @staticmethod
     def get_all_caixas():
 
-        return get_all(CaixaModel)
+        # return get_all(CaixaModel)
+        caixa_list = get_all(CaixaModel)
+        for caixa in caixa_list:
+            update_model(caixa, {"saldo": caixa.update_balance_all_bills() })
+        
+        return caixa_list
 
     @staticmethod
     def get_by_id(id):
 
-        return get_one(CaixaModel, id)
+        # return get_one(CaixaModel, id)
+        caixa = get_one(CaixaModel, id)
+        update_model(caixa, {"saldo": caixa.update_balance_all_bills() })
+        
+        return caixa
+
+
 
     @staticmethod
     def update_caixa(data: dict, id):

@@ -7,7 +7,7 @@ update_model, delete_commit, verify_missing_key)
 
 class ContaProdutoServices:
 
-    required_fields = ["id_conta", "id_produto"]
+    required_fields = ["id_conta", "id_produto", "quantity"]
 
     @staticmethod
     def create_conta_produto(data:dict):
