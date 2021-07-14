@@ -13,3 +13,7 @@ class ContaProdutoModel(db.Model):
     id = Column(Integer, primary_key=True)
     id_conta = Column(Integer, ForeignKey("contas.id"), nullable=False)
     id_produto = Column(Integer, ForeignKey("produtos.id"), nullable=False)
+    quantity = Column(Integer, nullable=False)
+
+    def update_quantity(self, qt):
+        self.quantity = qt

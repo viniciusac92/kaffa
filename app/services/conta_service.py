@@ -33,7 +33,12 @@ class ContaServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(ContaModel, id)
+        # return get_one(ContaModel, id)
+        conta: ContaModel = get_one(ContaModel, id)
+        valor_conta = conta.atualizar_valor_conta()
+        print(valor_conta)
+        return conta
+
 
     @staticmethod
     def update_conta(data: dict, id):

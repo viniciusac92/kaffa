@@ -27,3 +27,9 @@ class ContaModel(db.Model):
 
     lista_produtos = relationship("ProdutoModel", secondary="conta_produto", backref=backref("contas_list"))
     
+    def update_value(self):
+        return sum([
+            produto.preco
+            for produto in self.lista_produtos
+        ])
+        
