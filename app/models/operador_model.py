@@ -1,7 +1,9 @@
-from sqlalchemy import Column, String, Integer, ForeignKey
-from sqlalchemy.orm import relationship, backref
-from app.configs.database import db
 from dataclasses import dataclass
+
+from app.configs.database import db
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import backref, relationship
+
 
 @dataclass
 class OperadorModel(db.Model):
@@ -17,4 +19,8 @@ class OperadorModel(db.Model):
     cpf = Column(String(11), nullable=False, unique=True)
     id_usuario = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
 
-    lista_caixas = relationship("CaixaModel", backref=backref("operadores_list"), secondary="operador_caixa")
+    lista_caixas = relationship(
+        "CaixaModel", backref=backref("operadores_list"), secondary="operador_caixa"
+    )
+
+    usuario = relationship('UserModel', backref=backref('operador', uselist=False))

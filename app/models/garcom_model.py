@@ -1,8 +1,9 @@
-from sqlalchemy import Column, String, Integer, ForeignKey
-from sqlalchemy.orm import relationship, backref
+from dataclasses import dataclass
 
 from app.configs.database import db
-from dataclasses import dataclass
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import backref, relationship
+
 
 @dataclass
 class GarcomModel(db.Model):
@@ -19,3 +20,5 @@ class GarcomModel(db.Model):
     id_usuario = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
 
     lista_contas = relationship("ContaModel", backref=backref("garcom"))
+
+    usuario = relationship('UserModel', backref=backref('garcom', uselist=False))
