@@ -12,5 +12,5 @@ class OperatorCashierModel(db.Model):
     __tablename__ = "operator_cashier"
 
     id = Column(Integer, primary_key=True)
-    id_operator = Column(Integer, ForeignKey("operatores.id"), nullable=False)
+    id_operator = Column(Integer, ForeignKey("operators.id"), nullable=False)
     id_cashier = Column(Integer, ForeignKey("cashiers.id"), nullable=False)

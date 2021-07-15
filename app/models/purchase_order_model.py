@@ -18,7 +18,7 @@ class PurchaseOrderModel(db.Model):
     id = Column(Integer, primary_key=True)
 
     id_fornecedor = Column(Integer, ForeignKey(
-        "fornecedor.id"), nullable=False)
+        "provider.id"), nullable=False)
     data = Column(DateTime, nullable=False)
 
     lista_produtos = relationship(
