@@ -4,23 +4,24 @@ from app.configs.database import db
 from dataclasses import dataclass
 from werkzeug.security import check_password_hash, generate_password_hash
 
+
 @dataclass
 class UserModel(db.Model):
     id: int
     username: str
-    tipo: int
+    type: int
     password_hash: str
 
-    __tablename__ = "usuarios"
+    __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
     username = Column(String(50), nullable=False, unique=True)
-    tipo = Column(Integer, nullable=False)
+    type = Column(Integer, nullable=False)
     password_hash = Column(String, nullable=False)
 
     @property
     def password(self):
-        raise "O password não pode ser acessado!"
+        raise "Password not accessible"
 
     @password.setter
     def password(self, password_to_hash):
