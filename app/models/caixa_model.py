@@ -22,7 +22,7 @@ class CaixaModel(db.Model):
         accum = 0
         
         for conta in self.lista_contas:
-            accum = accum + conta.update_value()
+            accum = accum + conta.close_bill()
         
         self.saldo = round(accum, 2)
 

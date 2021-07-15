@@ -1,5 +1,5 @@
 from ..services import ContaProdutoServices
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, AccountClosedError, OutOfStockError
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, request, jsonify
@@ -26,6 +26,11 @@ def create():
     except RequiredKeyError as e:
         return e.message
 
+    except OutOfStockError as e:
+        return e.message
+
+    except AccountClosedError as e:
+        return e.message
 
 @bp.route("/conta_produto", methods=["GET"])
 @jwt_required()

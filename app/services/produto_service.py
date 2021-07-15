@@ -7,7 +7,7 @@ update_model, delete_commit, verify_missing_key)
 
 class ProdutoServices:
 
-    required_fields = ["nome","descricao","preco"]
+    required_fields = ["nome","descricao","preco", "stock"]
 
     @staticmethod
     def create_produto(data:dict):

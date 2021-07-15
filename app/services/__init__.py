@@ -11,7 +11,7 @@ from .mesa_service import MesaServices
 from .operador_service import OperadorServices
 from .produto_service import ProdutoServices
 from .conta_produto_service import ContaProdutoServices
-from .estoque_produto_service import EstoqueProdutoServices
+# from .estoque_produto_service import EstoqueProdutoServices
 from .fornecedor_produto_service import FornecedorProdutoServices
 from .operador_caixa_service import OperadorCaixaServices
 from .ordem_compra_service import OrdemCompraServices

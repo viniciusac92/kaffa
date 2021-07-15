@@ -35,6 +35,7 @@ class ContaServices:
             "garcom": GarcomModel.query.get(bill.id_garcom).nome,
             "id_mesa": bill.id_mesa,
             "forma_pagamento": FormaPagamentoModel.query.get(bill.id_forma_pagamento).nome,
+            "is_finished": bill.is_finished,
             "lista_produtos": [
                 {
                     "id": produto.id,
@@ -60,6 +61,7 @@ class ContaServices:
                 "garcom": GarcomModel.query.get(bill.id_garcom).nome,
                 "id_mesa": bill.id_mesa,
                 "forma_pagamento": FormaPagamentoModel.query.get(bill.id_forma_pagamento).nome,
+                "is_finished": bill.is_finished,
                 "lista_produtos": [
                     {
                         "id": produto.id,

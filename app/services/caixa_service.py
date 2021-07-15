@@ -5,6 +5,8 @@ from ..models import CaixaModel
 from . import (add_commit, get_all, get_one, verify_recieved_keys, 
 update_model, delete_commit, verify_missing_key)
 
+import ipdb
+
 class CaixaServices:
 
     required_fields = ["valor_inicial", "saldo"]
@@ -39,6 +41,7 @@ class CaixaServices:
 
         # return get_one(CaixaModel, id)
         caixa = get_one(CaixaModel, id)
+
         update_model(caixa, {"saldo": caixa.update_balance_all_bills() })
         
         return caixa

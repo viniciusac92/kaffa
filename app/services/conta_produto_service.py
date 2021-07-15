@@ -1,7 +1,7 @@
 from app.custom_errors.not_found import NotFoundError
 from app.custom_errors import required_key
-from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import ContaProdutoModel, ContaModel
+from ..custom_errors import MissingKeyError, RequiredKeyError, OutOfStockError, AccountClosedError
+from ..models import ContaProdutoModel, ContaModel, ProdutoModel
 from . import (add_commit, get_all, get_one, verify_recieved_keys, 
 update_model, delete_commit, verify_missing_key)
 
@@ -17,6 +17,14 @@ class ContaProdutoServices:
 
         if verify_recieved_keys(data, ContaProdutoServices.required_fields):
             raise RequiredKeyError(data, ContaProdutoServices.required_fields)
+
+        produto: ProdutoModel = ProdutoModel.query.get(data["id_produto"])
+        if data["quantity"] > produto.stock:
+            raise OutOfStockError(produto.nome)
+        
+        conta: ContaModel = ContaModel.query.get(data["id_conta"]) 
+        if conta.is_finished:
+            raise AccountClosedError()
 
         conta_produto: ContaProdutoModel = ContaProdutoModel(**data)
 

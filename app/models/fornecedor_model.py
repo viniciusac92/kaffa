@@ -23,3 +23,5 @@ class FornecedorModel(db.Model):
     lista_de_produtos = relationship(
         'ProdutoModel', backref=backref('fornecedor_list'), secondary='fornecedor_produto'
     )
+
+    

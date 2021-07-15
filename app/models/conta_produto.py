@@ -18,3 +18,5 @@ class ContaProdutoModel(db.Model):
 
     def update_quantity(self, qt):
         self.quantity = qt
+
+    

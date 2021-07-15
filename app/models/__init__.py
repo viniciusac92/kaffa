@@ -1,6 +1,6 @@
 from .caixa_model import CaixaModel
 from .conta_model import ContaModel
-from .estoque_produto import EstoqueProdutoModel
+# from .estoque_produto import EstoqueProdutoModel
 from .forma_pagamento_model import FormaPagamentoModel
 from .caixa_model import CaixaModel
 from .conta_model import ContaModel
