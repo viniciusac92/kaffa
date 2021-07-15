@@ -1,7 +1,8 @@
-from sqlalchemy import Column, String, Integer
-from sqlalchemy.orm import relationship, backref
-from app.configs.database import db
 from dataclasses import dataclass
+
+from app.configs.database import db
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import backref, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -15,6 +16,7 @@ class UserModel(db.Model):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
+
     username = Column(String(50), nullable=False, unique=True)
     type = Column(Integer, nullable=False)
     password_hash = Column(String, nullable=False)
