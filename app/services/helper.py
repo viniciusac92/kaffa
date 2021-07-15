@@ -35,4 +35,3 @@ def update_model(model:Model, data:dict) -> None:
         setattr(model, key, value)
     add_commit(model)
 
-

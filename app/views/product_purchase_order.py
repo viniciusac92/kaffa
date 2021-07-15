@@ -1,23 +1,24 @@
-from ..services import UserServices
+from ..services import ProductPurchaseOrderServices
 from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, request, jsonify
 from http import HTTPStatus
 
-bp = Blueprint('bp_user', __name__, url_prefix='/api')
+
+bp = Blueprint('bp_product_purchase_order', __name__, url_prefix='/api')
 
 
-@bp.route("/user", methods=["POST"])
-# @jwt_required()
+@bp.route("/product_purchase_order", methods=["POST"])
+@jwt_required()
 def create():
-    # if get_jwt_identity()["type"] != 1:
-    #     return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+    if get_jwt_identity()["type"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     data = request.get_json()
 
     try:
-        return jsonify(UserServices.create_user(data)), HTTPStatus.CREATED
+        return jsonify(ProductPurchaseOrderServices.create_product_purchase_order(data)), HTTPStatus.CREATED
 
     except MissingKeyError as e:
         return e.message
@@ -26,7 +27,7 @@ def create():
         return e.message
 
 
-@bp.route("/user", methods=["GET"])
+@bp.route("/product_purchase_order", methods=["GET"])
 @jwt_required()
 def get():
     if get_jwt_identity()["type"] != 1:
@@ -35,14 +36,15 @@ def get():
     id = request.args.get("id")
     try:
         if id:
-            return jsonify(UserServices.get_by_id(id)), HTTPStatus.OK
-        return jsonify(UserServices.get_all_users()), HTTPStatus.OK
+            return jsonify(ProductPurchaseOrderServices.get_by_id(id))
+
+        return jsonify(ProductPurchaseOrderServices.get_all_product_purchase_orders()), HTTPStatus.OK
 
     except NotFoundError as e:
         return e.message
 
 
-@bp.route("/user/<int:id>", methods=["PUT", "PATCH"])
+@bp.route("/product_purchase_order/<int:id>", methods=["PUT", "PATCH"])
 @jwt_required()
 def update(id):
     if get_jwt_identity()["type"] != 1:
@@ -51,7 +53,7 @@ def update(id):
     data = request.get_json()
 
     try:
-        return jsonify(UserServices.update_user(data, id)), HTTPStatus.OK
+        return jsonify(ProductPurchaseOrderServices.update_product_purchase_order(data, id)), HTTPStatus.OK
 
     except NotFoundError as e:
         return e.message
@@ -60,14 +62,14 @@ def update(id):
         return e.message
 
 
-@bp.route("/user/<int:id>", methods=["DELETE"])
+@bp.route("/product_purchase_order/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete(id):
     if get_jwt_identity()["type"] != 1:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     try:
-        UserServices.delete_user(id)
+        ProductPurchaseOrderServices.delete_product_purchase_order(id)
 
     except NotFoundError as e:
         return e.message

@@ -3,39 +3,40 @@ from flask import Flask
 
 def init_app(app: Flask) -> None:
     # import das bps e registro das blueprints abaixo
+    from .account_product_view import bp as bp_account_product
+    from .account_view import bp as bp_account
+    from .cashier_view import bp as bp_cashier
     from .login_view import bp as bp_login
+    from .manager_view import bp as bp_manager
+    from .operator_cashier_view import bp as bp_operator_cashier
+    from .operator_view import bp as bp_operator
+    from .payment_method_view import bp as bp_payment_method
+    from .product_purchase_order import bp as bp_product_purchase_order
+    from .product_view import bp as bp_product
+    from .provider_product_view import bp as bp_provider_product
+    from .provider_view import bp as bp_provider
+    from .purchase_order_views import bp as bp_purchase_order
+    from .stock_product_view import bp as bp_stock_product
+    from .table_view import bp as bp_table
+    from .tests_v_view import bp as bp_tests_v
     from .user_view import bp as bp_user
-    from .conta_view import bp as bp_conta
-    from .garcom_view import bp as bp_garcon
-    from .forma_pagamento_view import bp as bp_forma_pgto
-    from .caixa_view import bp as bp_caixa
-    from .fornecedor_view import bp as bp_fornecedor
-    from .gerente_view import bp as bp_gerente
-    from .mesa_view import bp as bp_mesa
-    from .operador_view import bp as bp_operador
-    from .produto_view import bp as bp_produto
-    from .conta_produto_view import bp as bp_conta_produto
-    from .estoque_produto_view import bp as bp_estoque_produto
-    from .fornecedor_produto_view import bp as bp_fornecedor_produto
-    from .operador_caixa_view import bp as bp_operador_caixa
-    from .ordem_compra_views import bp as bp_ordem_compra
-    from .produto_ordem_compra import bp as bp_produto_ordem_compra
+    from .waiter_view import bp as bp_waiter
 
     app.register_blueprint(bp_login)
     app.register_blueprint(bp_user)
-    app.register_blueprint(bp_conta)
-    app.register_blueprint(bp_garcon)
-    app.register_blueprint(bp_forma_pgto)
-    app.register_blueprint(bp_caixa)
-    app.register_blueprint(bp_fornecedor)
-    app.register_blueprint(bp_gerente)
-    app.register_blueprint(bp_mesa)
-    app.register_blueprint(bp_operador)
-    app.register_blueprint(bp_produto)
-    app.register_blueprint(bp_conta_produto)
-    app.register_blueprint(bp_estoque_produto)
-    app.register_blueprint(bp_fornecedor_produto)
-    app.register_blueprint(bp_operador_caixa)
-    app.register_blueprint(bp_ordem_compra)
-    app.register_blueprint(bp_produto_ordem_compra)
-    
+    app.register_blueprint(bp_account)
+    app.register_blueprint(bp_waiter)
+    app.register_blueprint(bp_payment_method)
+    app.register_blueprint(bp_cashier)
+    app.register_blueprint(bp_provider)
+    app.register_blueprint(bp_manager)
+    app.register_blueprint(bp_table)
+    app.register_blueprint(bp_operator)
+    app.register_blueprint(bp_product)
+    app.register_blueprint(bp_account_product)
+    app.register_blueprint(bp_stock_product)
+    app.register_blueprint(bp_provider_product)
+    app.register_blueprint(bp_operator_cashier)
+    app.register_blueprint(bp_purchase_order)
+    app.register_blueprint(bp_product_purchase_order)
+    app.register_blueprint(bp_tests_v)
