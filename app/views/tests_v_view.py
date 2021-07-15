@@ -12,7 +12,7 @@ from app.models import (
 )
 from flask import Blueprint
 
-bp = Blueprint('bp_testes', __name__, url_prefix='/api')
+bp = Blueprint('bp_tests_v', __name__, url_prefix='/api')
 
 
 @bp.route("/", methods=["GET"])
