@@ -22,5 +22,5 @@ class PurchaseOrderModel(db.Model):
     products_list = relationship(
         'ProductModel',
         backref=backref('purchase_order_list'),
-        secondary='produto_purchase_order',
+        secondary='product_purchase_order',
     )

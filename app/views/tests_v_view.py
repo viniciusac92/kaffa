@@ -31,7 +31,7 @@ def get():
 
     # ROTA DE VENDAS
 
-    data1 = [info.usuario.username for info in gerentes_list]
+    data1 = [info for info in gerentes_list]
 
     # data2 = [info.usuario.username for info in garcons_list]
 
