@@ -1,6 +1,6 @@
 from .cashier_model import CashierModel
 from .account_model import AccountModel
-from .stock_product import StockProductModel
+# from .stock_product import StockProductModel
 from .payment_method_model import PaymentMethodModel
 from .cashier_model import CashierModel
 from .account_model import AccountModel

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, Integer, and_
+from sqlalchemy import Column, Date, Integer, Boolean, and_
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
