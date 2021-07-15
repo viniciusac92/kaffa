@@ -1,10 +1,10 @@
-from ..services import StockProductServices
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
-
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask import Blueprint, request, jsonify
 from http import HTTPStatus
 
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
+
+from ..custom_errors import MissingKeyError, NotFoundError, RequiredKeyError
+from ..services import StockProductServices
 
 bp = Blueprint('bp_stock_product', __name__, url_prefix='/api')
 
@@ -18,7 +18,10 @@ def create():
     data = request.get_json()
 
     try:
-        return jsonify(StockProductServices.create_stock_product(data)), HTTPStatus.CREATED
+        return (
+            jsonify(StockProductServices.create_stock_product(data)),
+            HTTPStatus.CREATED,
+        )
 
     except MissingKeyError as e:
         return e.message
@@ -53,7 +56,10 @@ def update(id):
     data = request.get_json()
 
     try:
-        return jsonify(StockProductServices.update_stock_product(data, id)), HTTPStatus.OK
+        return (
+            jsonify(StockProductServices.update_stock_product(data, id)),
+            HTTPStatus.OK,
+        )
 
     except NotFoundError as e:
         return e.message
