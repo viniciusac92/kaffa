@@ -1,8 +1,12 @@
-from sqlalchemy import Column, Date, Integer
+from sqlalchemy import Column, Date, Integer, and_
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
 from datetime import date
+
+import ipdb
+
+from .conta_produto import ContaProdutoModel
 
 from app.configs.database import db
 
@@ -27,3 +31,12 @@ class ContaModel(db.Model):
 
     lista_produtos = relationship("ProdutoModel", secondary="conta_produto", backref=backref("contas_list"))
     
+    def update_value(self):
+        bill_value = 0
+
+        for produto in self.lista_produtos:
+            conta_produto: ContaProdutoModel = ContaProdutoModel.query.filter(and_(ContaProdutoModel.id_produto == produto.id, ContaProdutoModel.id_conta == self.id)).first()
+            bill_value = bill_value + (produto.preco * conta_produto.quantity)
+        
+        return bill_value        
+

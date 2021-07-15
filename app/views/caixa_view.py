@@ -1,3 +1,4 @@
+from app.models.caixa_model import CaixaModel
 from ..services import CaixaServices
 from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
 
