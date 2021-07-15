@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from ..custom_errors import MissingKeyError, NotFoundError, RequiredKeyError
-from ..services import FornecedorServices, StockProductServices
+from ..services import StockProductServices
 
 bp = Blueprint('bp_stock_product', __name__, url_prefix='/api')
 
