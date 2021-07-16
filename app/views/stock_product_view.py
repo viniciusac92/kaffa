@@ -5,9 +5,7 @@
 # from flask import Blueprint, request, jsonify
 # from http import HTTPStatus
 
-
 # bp = Blueprint('bp_stock_product', __name__, url_prefix='/api')
-
 
 # @bp.route("/stock_product", methods=["POST"])
 # @jwt_required()

@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, Float
-from sqlalchemy.orm import relationship, backref
-from app.configs.database import db
 from dataclasses import dataclass
+
+from app.configs.database import db
+from sqlalchemy import Column, Float, Integer
+from sqlalchemy.orm import backref, relationship
 
 
 @dataclass
@@ -9,7 +10,6 @@ class CashierModel(db.Model):
     id: int
     initial_value: float
     balance: float
-    account_list: list
 
     __tablename__ = "cashiers"
 
@@ -18,7 +18,8 @@ class CashierModel(db.Model):
     balance = Column(Float, default=0.0)
 
     account_list = relationship(
-        "AccountModel", backref=backref("cashier", uselist=False))
+        "AccountModel", backref=backref("cashier", uselist=False)
+    )
 
     def update_balance_all_bills(self):
         accum = 0

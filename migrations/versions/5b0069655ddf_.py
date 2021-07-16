@@ -1,16 +1,16 @@
 """empty message
 
-Revision ID: 144ef9fdc259
+Revision ID: 5b0069655ddf
 Revises: 
-Create Date: 2021-07-13 22:40:36.412579
+Create Date: 2021-07-15 18:24:46.996425
 
 """
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = '144ef9fdc259'
-down_revision = None
+revision = '5b0069655ddf'
+down_revision = 'e4a22ea19e67'
 branch_labels = None
 depends_on = None
 
@@ -33,6 +33,15 @@ def upgrade():
         sa.UniqueConstraint('name'),
     )
     op.create_table(
+        'products',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('name', sa.String(length=50), nullable=False),
+        sa.Column('description', sa.String(length=200), nullable=True),
+        sa.Column('price', sa.Float(), nullable=False),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('name'),
+    )
+    op.create_table(
         'provider',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('trading_name', sa.String(length=200), nullable=False),
@@ -50,15 +59,6 @@ def upgrade():
         sa.UniqueConstraint('number'),
     )
     op.create_table(
-        'products',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('name', sa.String(length=50), nullable=False),
-        sa.Column('description', sa.String(length=200), nullable=True),
-        sa.Column('price', sa.Float(), nullable=False),
-        sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('name'),
-    )
-    op.create_table(
         'user',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('username', sa.String(length=50), nullable=False),
@@ -66,47 +66,6 @@ def upgrade():
         sa.Column('password_hash', sa.String(), nullable=False),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('username'),
-    )
-    op.create_table(
-        'stock_product',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('id_product', sa.Integer(), nullable=False),
-        sa.Column('quantity', sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ['id_product'],
-            ['products.id'],
-        ),
-        sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('id_product'),
-    )
-    op.create_table(
-        'provider_product',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('id_product', sa.Integer(), nullable=False),
-        sa.Column('id_provider', sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ['id_provider'],
-            ['provider.id'],
-        ),
-        sa.ForeignKeyConstraint(
-            ['id_product'],
-            ['products.id'],
-        ),
-        sa.PrimaryKeyConstraint('id'),
-    )
-    op.create_table(
-        'waiters',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('name', sa.String(length=50), nullable=False),
-        sa.Column('cpf', sa.String(length=11), nullable=False),
-        sa.Column('id_user', sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ['id_user'],
-            ['user.id'],
-        ),
-        sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('cpf'),
-        sa.UniqueConstraint('id_user'),
     )
     op.create_table(
         'managers',
@@ -137,6 +96,21 @@ def upgrade():
         sa.UniqueConstraint('id_user'),
     )
     op.create_table(
+        'provider_product',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('id_product', sa.Integer(), nullable=False),
+        sa.Column('id_provider', sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(
+            ['id_product'],
+            ['products.id'],
+        ),
+        sa.ForeignKeyConstraint(
+            ['id_provider'],
+            ['provider.id'],
+        ),
+        sa.PrimaryKeyConstraint('id'),
+    )
+    op.create_table(
         'purchase_order',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('id_provider', sa.Integer(), nullable=False),
@@ -146,6 +120,32 @@ def upgrade():
             ['provider.id'],
         ),
         sa.PrimaryKeyConstraint('id'),
+    )
+    op.create_table(
+        'stock_product',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('id_product', sa.Integer(), nullable=False),
+        sa.Column('quantity', sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(
+            ['id_product'],
+            ['products.id'],
+        ),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('id_product'),
+    )
+    op.create_table(
+        'waiters',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('name', sa.String(length=50), nullable=False),
+        sa.Column('cpf', sa.String(length=11), nullable=False),
+        sa.Column('id_user', sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(
+            ['id_user'],
+            ['user.id'],
+        ),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('cpf'),
+        sa.UniqueConstraint('id_user'),
     )
     op.create_table(
         'accounts',
@@ -164,12 +164,12 @@ def upgrade():
             ['payment_method.id'],
         ),
         sa.ForeignKeyConstraint(
-            ['id_waiter'],
-            ['waiters.id'],
-        ),
-        sa.ForeignKeyConstraint(
             ['id_table'],
             ['tables.id'],
+        ),
+        sa.ForeignKeyConstraint(
+            ['id_waiter'],
+            ['waiters.id'],
         ),
         sa.PrimaryKeyConstraint('id'),
     )
@@ -208,6 +208,7 @@ def upgrade():
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('id_account', sa.Integer(), nullable=False),
         sa.Column('id_product', sa.Integer(), nullable=False),
+        sa.Column('quantity', sa.Integer(), nullable=True),
         sa.ForeignKeyConstraint(
             ['id_account'],
             ['accounts.id'],
@@ -227,16 +228,16 @@ def downgrade():
     op.drop_table('product_purchase_order')
     op.drop_table('operator_cashier')
     op.drop_table('accounts')
+    op.drop_table('waiters')
+    op.drop_table('stock_product')
     op.drop_table('purchase_order')
+    op.drop_table('provider_product')
     op.drop_table('operators')
     op.drop_table('managers')
-    op.drop_table('waiters')
-    op.drop_table('provider_product')
-    op.drop_table('stock_product')
     op.drop_table('user')
-    op.drop_table('products')
     op.drop_table('tables')
     op.drop_table('provider')
+    op.drop_table('products')
     op.drop_table('payment_method')
     op.drop_table('cashiers')
     # ### end Alembic commands ###
