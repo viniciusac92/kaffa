@@ -33,7 +33,12 @@ class PurchaseOrderServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(PurchaseOrderModel, id)
+        # return get_one(PurchaseOrderModel, id)
+
+        purchase_order: PurchaseOrderModel = get_one(PurchaseOrderModel, id)
+        purchase_order.close_order()
+
+        return purchase_order
 
     @staticmethod
     def update_purchase_order(data: dict, id):
