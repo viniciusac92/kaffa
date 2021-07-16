@@ -16,7 +16,7 @@ from .helper import (
 
 class ProductPurchaseOrderServices:
 
-    required_fields = ["id_order", "id_product"]
+    required_fields = ["id_order", "id_product", "quantity"]
 
     @staticmethod
     def create_product_purchase_order(data: dict):
@@ -26,6 +26,12 @@ class ProductPurchaseOrderServices:
 
         if verify_recieved_keys(data, ProductPurchaseOrderServices.required_fields):
             raise RequiredKeyError(data, ProductPurchaseOrderServices.required_fields)
+
+        purchase_order: PurchaseOrderModel = PurchaseOrderModel.query.get(
+            data["id_order"]
+        )
+        if purchase_order.is_finished:
+            raise PurchaseClosedError()
 
         product_purchase_order = ProductPurchaseOrderModel(**data)
 

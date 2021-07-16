@@ -38,7 +38,7 @@ def get():
         if id:
             return jsonify(ProviderServices.get_by_id(id))
 
-        return jsonify(ProviderServices.get_all_provideres()), HTTPStatus.OK
+        return jsonify(ProviderServices.get_all_providers()), HTTPStatus.OK
 
     except NotFoundError as e:
         return e.message
