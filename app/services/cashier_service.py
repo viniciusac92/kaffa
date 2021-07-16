@@ -1,9 +1,17 @@
-from app.custom_errors.not_found import NotFoundError
 from app.custom_errors import required_key
+from app.custom_errors.not_found import NotFoundError
+
 from ..custom_errors import MissingKeyError, RequiredKeyError
 from ..models import CashierModel
-from . import (add_commit, get_all, get_one, verify_recieved_keys,
-               update_model, delete_commit, verify_missing_key)
+from .helper import (
+    add_commit,
+    delete_commit,
+    get_all,
+    get_one,
+    update_model,
+    verify_missing_key,
+    verify_recieved_keys,
+)
 
 
 class CashierServices:
@@ -31,8 +39,7 @@ class CashierServices:
         # return get_all(CashierModel)
         cashier_list = get_all(CashierModel)
         for cashier in cashier_list:
-            update_model(
-                cashier, {"balance": cashier.update_balance_all_bills()})
+            update_model(cashier, {"balance": cashier.update_balance_all_bills()})
 
         return cashier_list
 

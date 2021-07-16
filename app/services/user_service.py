@@ -1,13 +1,21 @@
-from app.custom_errors.not_found import NotFoundError
 from app.custom_errors import required_key
-from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import UserModel
-from . import (add_commit, get_all, get_one, verify_recieved_keys,
-               update_model, delete_commit, verify_missing_key)
-from app.services.waiter_service import WaiterServices
+from app.custom_errors.not_found import NotFoundError
 from app.services.manager_service import ManagerServices
 from app.services.operator_service import OperatorServices
+from app.services.waiter_service import WaiterServices
 from ipdb import set_trace
+
+from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..models import UserModel
+from .helper import (
+    add_commit,
+    delete_commit,
+    get_all,
+    get_one,
+    update_model,
+    verify_missing_key,
+    verify_recieved_keys,
+)
 
 
 class UserServices:
@@ -35,15 +43,18 @@ class UserServices:
 
         if data["type"] == 1:
             info_user = ManagerServices.create_manager(
-                {"name": name, "cpf": cpf, "id_user": user.id})
+                {"name": name, "cpf": cpf, "id_user": user.id}
+            )
 
         if data["type"] == 2:
             info_user = WaiterServices.create_waiter(
-                {"name": name, "cpf": cpf, "id_user": user.id})
+                {"name": name, "cpf": cpf, "id_user": user.id}
+            )
 
         if data["type"] == 3:
             info_user = OperatorServices.create_operator(
-                {"name": name, "cpf": cpf, "id_user": user.id})
+                {"name": name, "cpf": cpf, "id_user": user.id}
+            )
 
         if user.type == 1:
             type = "Manager"
@@ -57,7 +68,7 @@ class UserServices:
             "type": type,
             "username": user.username,
             "cpf": info_user.cpf,
-            "password": user.password_hash
+            "password": user.password_hash,
         }
 
     @staticmethod
