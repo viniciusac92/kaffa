@@ -28,13 +28,13 @@ class CashierServices:
     @staticmethod
     def get_all_cashiers():
 
-        # return get_all(CashierModel)
-        cashier_list = get_all(CashierModel)
-        for cashier in cashier_list:
-            update_model(
-                cashier, {"balance": cashier.update_balance_all_bills()})
+        return get_all(CashierModel)
+        # cashier_list = get_all(CashierModel)
+        # for cashier in cashier_list:
+        #     update_model(
+        #         cashier, {"balance": cashier.update_balance_all_bills()})
 
-        return cashier_list
+        # return cashier_list
 
     @staticmethod
     def get_by_id(id):

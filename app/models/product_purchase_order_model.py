@@ -10,6 +10,7 @@ class ProductPurchaseOrderModel(db.Model):
     id: int
     id_order: int
     id_product: int
+    quantity: int
 
     __tablename__ = 'product_purchase_order'
 
@@ -17,3 +18,4 @@ class ProductPurchaseOrderModel(db.Model):
 
     id_order = Column(Integer, ForeignKey("purchase_order.id"), nullable=False)
     id_product = Column(Integer, ForeignKey("products.id"), nullable=False)
+    quantity = Column(Integer, default=1)
