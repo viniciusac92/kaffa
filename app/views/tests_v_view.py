@@ -5,12 +5,15 @@ from app.models import (
     AccountModel,
     AccountProductModel,
     ManagerModel,
+    OperatorCashierModel,
     OperatorModel,
+    PaymentMethodModel,
     ProductModel,
     UserModel,
     WaiterModel,
 )
 from flask import Blueprint
+from sqlalchemy.sql import operators
 
 bp = Blueprint('bp_tests_v', __name__, url_prefix='/api')
 
@@ -19,19 +22,33 @@ bp = Blueprint('bp_tests_v', __name__, url_prefix='/api')
 def get():
     session = db.session
     gerentes_list = (
-        session.query(ManagerModel)
-        .join(UserModel, UserModel.id == ManagerModel.id_user)
-        .all()
+        session.query(UserModel).join(OperatorModel).join(OperatorCashierModel).all()
     )
     # garcons_list = session.query(WaiterModel).join(UserModel).all()
     # operadores_list = session.query(OperatorModel).join(UserModel).all()
-    # conta_list = (
-    #     session.query(ProductModel).join(AccountProductModel).join(AccountModel).all()
-    # )
+    conta_list = (
+        session.query(AccountModel).join(WaiterModel).join(PaymentMethodModel).all()
+    )
 
     # ROTA DE VENDAS
 
     data1 = [info for info in gerentes_list]
+
+    data2 = [
+        {
+            "id": info.id,
+            "data": info.date,
+            "caixa": info.id_cashier,
+            "garcom": info.waiter.name,
+            "mesa": info.id_table,
+            "forma_de_pagamento": info.payment_method.name,
+        }
+        for info in conta_list
+    ]
+
+    data2_2 = [info for info in conta_list]
+
+    # example = {**data2}
 
     # data2 = [info.usuario.username for info in garcons_list]
 
