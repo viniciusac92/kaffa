@@ -82,6 +82,7 @@ class AccountServices:
     def get_by_id(id):
 
         bill = get_one(AccountModel, id)
+        update_model(bill, {"is_finished": True})
 
         return {
             "id": bill.id,
