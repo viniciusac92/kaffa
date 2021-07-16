@@ -1,9 +1,9 @@
-from dataclasses import dataclass
+from sqlalchemy import Column, String, Integer, ForeignKey
+# from sqlalchemy.orm import relationship, backref
 
 from app.configs.database import db
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import backref, relationship
-
+from dataclasses import dataclass
+# from werkzeug.security import check_password_hash, generate_password_hash
 
 @dataclass
 class ManagerModel(db.Model):

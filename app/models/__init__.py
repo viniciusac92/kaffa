@@ -10,7 +10,7 @@ from .product_purchase_order_model import ProductPurchaseOrderModel
 from .provider_model import ProviderModel
 from .provider_product_model import ProviderProductModel
 from .purchase_order_model import PurchaseOrderModel
-from .stock_product import StockProductModel
+# from .stock_product import StockProductModel
 from .table_model import TableModel
 from .user_model import UserModel
 from .waiter_model import WaiterModel

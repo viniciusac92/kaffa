@@ -25,7 +25,7 @@ class CashierModel(db.Model):
         accum = 0
 
         for account in self.account_list:
-            accum = accum + account.update_value()
+            accum = accum + account.close_bill()
 
         self.balance = round(accum, 2)
 
