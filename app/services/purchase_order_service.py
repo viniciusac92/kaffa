@@ -37,6 +37,7 @@ class PurchaseOrderServices:
 
         purchase_order: PurchaseOrderModel = get_one(PurchaseOrderModel, id)
         purchase_order.close_order()
+        update_model(purchase_order, {"total_value": purchase_order.total_value})
 
         return purchase_order
 
