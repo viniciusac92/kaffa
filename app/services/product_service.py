@@ -8,7 +8,7 @@ from . import (add_commit, get_all, get_one, verify_recieved_keys,
 
 class ProductServices:
 
-    required_fields = ["name", "description", "price"]
+    required_fields = ["name", "description", "price", "stock"]
 
     @staticmethod
     def create_product(data: dict):

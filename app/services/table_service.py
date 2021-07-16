@@ -8,7 +8,7 @@ from . import (add_commit, get_all, get_one, verify_recieved_keys,
 
 class TableServices:
 
-    required_fields = ["numero"]
+    required_fields = ["number"]
 
     @staticmethod
     def create_table(data: dict):

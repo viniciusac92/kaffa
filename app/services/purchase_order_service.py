@@ -8,7 +8,7 @@ from . import (add_commit, get_all, get_one, verify_recieved_keys,
 
 class PurchaseOrderServices:
 
-    required_fields = ["id_provider", "date"]
+    required_fields = ["id_manager", "id_provider", "date"]
 
     @staticmethod
     def create_purchase_order(data: dict):

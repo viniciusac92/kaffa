@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, Integer, and_
+from sqlalchemy import Column, Date, Integer, Boolean, and_
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
@@ -19,6 +19,7 @@ class AccountModel(db.Model):
     id_waiter: int
     id_table: int
     id_payment_method: int
+    is_finished: bool
     product_list: list
 
     __tablename__ = "accounts"
@@ -30,11 +31,13 @@ class AccountModel(db.Model):
     id_table = Column(Integer, ForeignKey("tables.id"), nullable=False)
     id_payment_method = Column(Integer, ForeignKey(
         "payment_method.id"), nullable=False)
+    is_finished = Column(Boolean, default=False)
+
 
     product_list = relationship(
         "ProductModel", secondary="account_product", backref=backref("account_list"))
 
-    def update_value(self):
+    def get_value(self):
         bill_value = 0
 
         for product in self.product_list:
@@ -43,4 +46,17 @@ class AccountModel(db.Model):
             bill_value = bill_value + \
                 (product.price * account_product.quantity)
 
+        return bill_value
+
+    def close_bill(self):
+        bill_value = 0
+
+        for product in self.product_list:
+            account_product: AccountProductModel = AccountProductModel.query.filter(and_(
+                AccountProductModel.id_product == product.id, AccountProductModel.id_account == self.id)).first()
+            product.remove_from_stock(account_product.quantity)
+            bill_value = bill_value + \
+                (product.price * account_product.quantity)
+        
+        self.is_finished = True
         return bill_value

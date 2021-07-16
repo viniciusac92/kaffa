@@ -1,7 +1,7 @@
 from app.custom_errors.not_found import NotFoundError
 from app.custom_errors import required_key
-from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import AccountProductModel, AccountModel
+from ..custom_errors import MissingKeyError, RequiredKeyError, OutOfStockError, AccountClosedError
+from ..models import AccountProductModel, AccountModel, ProductModel
 from . import (add_commit, get_all, get_one, verify_recieved_keys,
                update_model, delete_commit, verify_missing_key)
 
@@ -19,6 +19,14 @@ class AccountProductServices:
         if verify_recieved_keys(data, AccountProductServices.required_fields):
             raise RequiredKeyError(
                 data, AccountProductServices.required_fields)
+
+        product: ProductModel = ProductModel.query.get(data["id_product"])
+        if data["quantity"] > product.stock:
+            raise OutOfStockError(product.name)
+        
+        account: AccountModel = AccountModel.query.get(data["id_account"])        
+        if account.is_finished:
+            raise AccountClosedError()
 
         account_product: AccountProductModel = AccountProductModel(**data)
 

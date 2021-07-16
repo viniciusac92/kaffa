@@ -11,7 +11,7 @@ from .table_service import TableServices
 from .operator_service import OperatorServices
 from .product_service import ProductServices
 from .account_product_service import AccountProductServices
-from .stock_product_service import StockProductServices
+# from .stock_product_service import StockProductServices
 from .provider_product_service import ProviderProductServices
 from .operator_cashier_service import OperatorCashierServices
 from .purchase_order_service import PurchaseOrderServices
