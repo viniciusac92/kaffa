@@ -8,8 +8,25 @@ fake = Faker()
 
 class FoodProvider(BaseProvider):
     def grocery(self):
-        groceries = ['Coca-cola', 'Café expresso', 'Chocolata 50% Cacau', 'Croissant', 'Biscoito de nata', 'Torta Holandesa', 'Folhado de Frango', 'Waffle', 'Capuccino', 'Pão de Queijo']
-        
+        groceries = [
+            'Café expresso',
+            'Capuccino',
+            'Irish coffee',
+            'Caffè latte',
+            'Macchiato',
+            'Mocha',
+            'Duplo',
+            'Coca-cola',
+            'Chocolate 50% Cacau',
+            'Croissant',
+            'Biscoito de nata',
+            'Torta Holandesa',
+            'Folhado de Frango',
+            'Waffle',
+            'Pão de Queijo',
+            'Bolo de fubá',
+        ]
+
         return random.choice(groceries)
 
 
