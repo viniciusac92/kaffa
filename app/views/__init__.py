@@ -16,9 +16,11 @@ def init_app(app: Flask) -> None:
     from .provider_product_view import bp as bp_provider_product
     from .provider_view import bp as bp_provider
     from .purchase_order_views import bp as bp_purchase_order
+    from .report_purchase_order_view import bp as bp_report_purchase_order
+    from .report_sales_view import bp as bp_report_sales
+
     # from .stock_product_view import bp as bp_stock_product
     from .table_view import bp as bp_table
-    from .tests_v_view import bp as bp_tests_v
     from .user_view import bp as bp_user
     from .waiter_view import bp as bp_waiter
 
@@ -39,4 +41,5 @@ def init_app(app: Flask) -> None:
     app.register_blueprint(bp_operator_cashier)
     app.register_blueprint(bp_purchase_order)
     app.register_blueprint(bp_product_purchase_order)
-    app.register_blueprint(bp_tests_v)
+    app.register_blueprint(bp_report_sales)
+    app.register_blueprint(bp_report_purchase_order)

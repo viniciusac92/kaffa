@@ -1,9 +1,22 @@
-from app.custom_errors.not_found import NotFoundError
 from app.custom_errors import required_key
-from ..custom_errors import MissingKeyError, RequiredKeyError, OutOfStockError, AccountClosedError
-from ..models import AccountProductModel, AccountModel, ProductModel
-from . import (add_commit, get_all, get_one, verify_recieved_keys,
-               update_model, delete_commit, verify_missing_key)
+from app.custom_errors.not_found import NotFoundError
+
+from ..custom_errors import (
+    AccountClosedError,
+    MissingKeyError,
+    OutOfStockError,
+    RequiredKeyError,
+)
+from ..models import AccountModel, AccountProductModel, ProductModel
+from .helper import (
+    add_commit,
+    delete_commit,
+    get_all,
+    get_one,
+    update_model,
+    verify_missing_key,
+    verify_recieved_keys,
+)
 
 
 class AccountProductServices:
@@ -17,14 +30,13 @@ class AccountProductServices:
             raise MissingKeyError(data, AccountProductServices.required_fields)
 
         if verify_recieved_keys(data, AccountProductServices.required_fields):
-            raise RequiredKeyError(
-                data, AccountProductServices.required_fields)
+            raise RequiredKeyError(data, AccountProductServices.required_fields)
 
         product: ProductModel = ProductModel.query.get(data["id_product"])
         if data["quantity"] > product.stock:
             raise OutOfStockError(product.name)
-        
-        account: AccountModel = AccountModel.query.get(data["id_account"])        
+
+        account: AccountModel = AccountModel.query.get(data["id_account"])
         if account.is_finished:
             raise AccountClosedError()
 
@@ -48,8 +60,7 @@ class AccountProductServices:
     def update_account_product(data: dict, id):
 
         if verify_recieved_keys(data, AccountProductServices.required_fields):
-            raise RequiredKeyError(
-                data, AccountProductServices.required_fields)
+            raise RequiredKeyError(data, AccountProductServices.required_fields)
 
         if not get_one(AccountProductModel, id):
             raise NotFoundError

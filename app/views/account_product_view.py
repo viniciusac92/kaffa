@@ -1,10 +1,16 @@
-from ..services import AccountProductServices
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, AccountClosedError, OutOfStockError
-
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask import Blueprint, request, jsonify
 from http import HTTPStatus
 
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
+
+from ..custom_errors import (
+    AccountClosedError,
+    MissingKeyError,
+    NotFoundError,
+    OutOfStockError,
+    RequiredKeyError,
+)
+from ..services import AccountProductServices
 
 bp = Blueprint('bp_account_product', __name__, url_prefix='/api')
 
@@ -12,20 +18,23 @@ bp = Blueprint('bp_account_product', __name__, url_prefix='/api')
 @bp.route("/account_product", methods=["POST"])
 @jwt_required()
 def create():
-    if get_jwt_identity()["type"] != 1:
+    if get_jwt_identity()["type"] != 2:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     data = request.get_json()
 
     try:
-        return jsonify(AccountProductServices.create_account_product(data)), HTTPStatus.CREATED
+        return (
+            jsonify(AccountProductServices.create_account_product(data)),
+            HTTPStatus.CREATED,
+        )
 
     except MissingKeyError as e:
         return e.message
 
     except RequiredKeyError as e:
         return e.message
-    
+
     except OutOfStockError as e:
         return e.message
 
@@ -59,7 +68,10 @@ def update(id):
     data = request.get_json()
 
     try:
-        return jsonify(AccountProductServices.update_account_product(data, id)), HTTPStatus.OK
+        return (
+            jsonify(AccountProductServices.update_account_product(data, id)),
+            HTTPStatus.OK,
+        )
 
     except NotFoundError as e:
         return e.message

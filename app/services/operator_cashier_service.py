@@ -1,9 +1,17 @@
-from app.custom_errors.not_found import NotFoundError
 from app.custom_errors import required_key
+from app.custom_errors.not_found import NotFoundError
+
 from ..custom_errors import MissingKeyError, RequiredKeyError
 from ..models import OperatorCashierModel
-from . import (add_commit, get_all, get_one, verify_recieved_keys,
-               update_model, delete_commit, verify_missing_key)
+from .helper import (
+    add_commit,
+    delete_commit,
+    get_all,
+    get_one,
+    update_model,
+    verify_missing_key,
+    verify_recieved_keys,
+)
 
 
 class OperatorCashierServices:
@@ -14,12 +22,10 @@ class OperatorCashierServices:
     def create_operator_cashier(data: dict):
 
         if verify_missing_key(data, OperatorCashierServices.required_fields):
-            raise MissingKeyError(
-                data, OperatorCashierServices.required_fields)
+            raise MissingKeyError(data, OperatorCashierServices.required_fields)
 
         if verify_recieved_keys(data, OperatorCashierServices.required_fields):
-            raise RequiredKeyError(
-                data, OperatorCashierServices.required_fields)
+            raise RequiredKeyError(data, OperatorCashierServices.required_fields)
 
         operator_cashier = OperatorCashierModel(**data)
 
@@ -41,8 +47,7 @@ class OperatorCashierServices:
     def update_operator_cashier(data: dict, id):
 
         if verify_recieved_keys(data, OperatorCashierServices.required_fields):
-            raise RequiredKeyError(
-                data, OperatorCashierServices.required_fields)
+            raise RequiredKeyError(data, OperatorCashierServices.required_fields)
 
         if not get_one(OperatorCashierModel, id):
             raise NotFoundError
