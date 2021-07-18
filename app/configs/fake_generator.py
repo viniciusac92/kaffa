@@ -6,8 +6,9 @@ from faker.providers import BaseProvider
 fake = Faker()
 
 
-class FoodProvider(BaseProvider):
-    def grocery(self):
+class FakeProvider(BaseProvider):
+    @staticmethod
+    def grocery():
         groceries = [
             'Café expresso',
             'Capuccino',
@@ -29,8 +30,15 @@ class FoodProvider(BaseProvider):
 
         return random.choice(groceries)
 
+    @staticmethod
+    def payment_method():
+        payment_methods = [
+            'Cartão crédito',
+            'Cartão débito',
+            'Dinheiro',
+        ]
 
-fake.add_provider(FoodProvider)
+        return random.choice(payment_methods)
 
 
-print(fake.grocery())
+fake.add_provider(FakeProvider)
