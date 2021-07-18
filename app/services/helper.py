@@ -94,6 +94,22 @@ def create_fake_purchase_order(amount: int):
     }
 
 
+def create_fake_product_purchase_order(purchase_order_service_retrieved_data: dict):
+
+    from app.services import ProductServices
+
+    products = ProductServices.get_all_products()
+
+    # import ipdb
+
+    # ipdb.set_trace()
+    return {
+        "id_order": purchase_order_service_retrieved_data.id,
+        "id_product": fake.random_int(min=1, max=len(products)),
+        "quantity": fake.random_int(min=1, max=10),
+    }
+
+
 def create_fake_tables():
     from app.services import TableServices
 

@@ -1,9 +1,9 @@
 import click
-from app.models.account_product import AccountProductModel
 from app.services import (
     AccountProductServices,
     AccountServices,
     PaymentMethodServices,
+    ProductPurchaseOrderServices,
     ProductServices,
     ProviderServices,
     PurchaseOrderServices,
@@ -17,6 +17,7 @@ from app.services.helper import (
     create_fake_cashier,
     create_fake_payment_methods,
     create_fake_product,
+    create_fake_product_purchase_order,
     create_fake_provider,
     create_fake_purchase_order,
     create_fake_tables,
@@ -83,7 +84,19 @@ def cli_purchase_order(app: Flask):
     def cli_purchase_order(amount: int):
         for user in range(int(amount)):
             purchase_order_data = create_fake_purchase_order(int(amount))
-            PurchaseOrderServices.create_purchase_order(purchase_order_data)
+            purchase_order_service_retrieved_data = (
+                PurchaseOrderServices.create_purchase_order(purchase_order_data)
+            )
+
+            product_purchase_order_data = create_fake_product_purchase_order(
+                purchase_order_service_retrieved_data
+            )
+            ProductPurchaseOrderServices.create_product_purchase_order(
+                product_purchase_order_data
+            )
+            # import ipdb
+
+            # ipdb.set_trace()
 
         click.echo('Purchase order made')
 
@@ -116,13 +129,13 @@ def cli_account(app: Flask):
                 PaymentMethodServices.create_payment_method(pay_mathods_data)
 
             account_data = create_fake_account(int(amount))
-            account_servide_retrieved_data = AccountServices.create_account(
+            account_service_retrieved_data = AccountServices.create_account(
                 account_data
             )
 
             for account_product in range(5):
                 account_product_data = create_fake_account_product(
-                    account_servide_retrieved_data
+                    account_service_retrieved_data
                 )
                 AccountProductServices.create_account_product(account_product_data)
 
