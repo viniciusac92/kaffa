@@ -157,9 +157,6 @@ def create_fake_account_product(account_data: dict):
 
     products = ProductServices.get_all_products()
 
-    # import ipdb
-
-    # ipdb.set_trace()
     return {
         'id_account': str(account_data['id']),
         'id_product': fake.random_int(min=1, max=len(products)),
