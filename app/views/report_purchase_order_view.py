@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from os import name
 
 from app.configs.database import db
 from app.models import (
@@ -11,7 +12,7 @@ from app.models import (
 )
 from app.models.manager_model import ManagerModel
 from app.models.product_purchase_order_model import ProductPurchaseOrderModel
-from app.services.helper import create_sales_report
+from app.services.helper import create_purchase_order_report
 from flask import Blueprint
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
@@ -26,29 +27,34 @@ def create():
 
     session = db.session
 
-    account_list = (
+    purchase_order_list = (
         session.query(
             PurchaseOrderModel.id,
             ProviderModel.trading_name,
             ProviderModel.cnpj,
             ManagerModel.name,
+            ProductModel.name,
+            ProductModel.stock,
+            ProductPurchaseOrderModel.quantity,
+            ProductModel.price,
+            ProductModel.price * ProductPurchaseOrderModel.quantity,
         )
         .join(PurchaseOrderModel, PurchaseOrderModel.id_provider == ProviderModel.id)
-        # .join(ManagerModel, ManagerModel.id == PurchaseOrderModel.id_manager)
+        .join(ManagerModel, ManagerModel.id == PurchaseOrderModel.id_manager)
         .join(
             ProductPurchaseOrderModel,
             ProductPurchaseOrderModel.id_order == PurchaseOrderModel.id,
         )
+        .join(ProductModel, ProductModel.id == ProductPurchaseOrderModel.id_product)
         .all()
     )
 
+    if len(purchase_order_list) == 0:
+        return {"message": "No open purchase orders"}, HTTPStatus.OK
+
+    create_purchase_order_report(purchase_order_list)
     import ipdb
 
     ipdb.set_trace()
-
-    if len(account_list) == 0:
-        return {"message": "No open accounts"}, HTTPStatus.OK
-
-    create_sales_report(account_list)
 
     return {"message": "Csv file created"}, HTTPStatus.OK

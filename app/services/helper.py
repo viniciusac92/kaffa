@@ -3,7 +3,7 @@ from datetime import datetime
 
 from app.configs.database import db
 from app.configs.fake_generator import FakeProvider
-from app.reports import DATABASE_PATH_SALES
+from app.reports import DATABASE_PATH_PURCHASING
 from faker import Faker
 from flask_sqlalchemy.model import Model
 from ipdb import set_trace
@@ -100,9 +100,6 @@ def create_fake_product_purchase_order(purchase_order_service_retrieved_data: di
 
     products = ProductServices.get_all_products()
 
-    # import ipdb
-
-    # ipdb.set_trace()
     return {
         "id_order": purchase_order_service_retrieved_data.id,
         "id_product": fake.random_int(min=1, max=len(products)),
@@ -180,7 +177,7 @@ def create_fake_account_product(account_data: dict):
     }
 
 
-def create_sales_report(account_list: list):
+def create_sales_report(account: list):
     fieldnames = [
         'waiter_id',
         'waiter_name',
@@ -194,10 +191,34 @@ def create_sales_report(account_list: list):
 
     report_data_list = [
         {fieldnames: data for fieldnames, data in zip(fieldnames, data)}
-        for data in account_list
+        for data in account
     ]
 
     with open(DATABASE_PATH_SALES, 'w') as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(report_data_list)
+
+
+def create_purchase_order_report(purchase_order: list):
+    fieldnames = [
+        'purchase_order_id',
+        'provider',
+        'cnpj',
+        'manager_in_charge',
+        'product',
+        'product_stock_amount',
+        'quantity_to_buy',
+        'last_unit_purchase_price',
+        'costing_estimate',
+    ]
+
+    report_purchase_data_list = [
+        {fieldnames: data for fieldnames, data in zip(fieldnames, data)}
+        for data in purchase_order
+    ]
+
+    with open(DATABASE_PATH_PURCHASING, 'w') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(report_purchase_data_list)
