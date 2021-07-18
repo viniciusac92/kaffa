@@ -54,7 +54,7 @@ def create_fake_user(amount: int):
     return {
         "username": FakeProvider.username_kaffa(),
         "type": fake.random_int(min=1, max=3),
-        "password": str(fake.password(length=4, digits=True)),
+        "password": "1234",
         "name": fake.name(),
         "cpf": str(fake.random_number(digits=9, fix_len=True)),
     }
@@ -148,3 +148,8 @@ def create_fake_account(amount: int):
         "id_table": fake.random_int(min=1, max=len(tables)),
         "id_payment_method": fake.random_int(min=1, max=len(payment_methods)),
     }
+
+
+def create_sales_report():
+
+    ...

@@ -9,11 +9,11 @@ fake = Faker()
 class FakeProvider(BaseProvider):
     @staticmethod
     def username_kaffa():
-        return fake.first_name() + ' ' + str(fake.password(length=9, digits=True))
+        return fake.first_name() + str(fake.password(length=9, digits=True))
 
     @staticmethod
     def product_name():
-        return FakeProvider.grocery() + ' ' + str(fake.password(length=9, digits=True))
+        return FakeProvider.grocery() + str(fake.password(length=9, digits=True))
 
     @staticmethod
     def grocery():
