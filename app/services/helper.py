@@ -3,7 +3,7 @@ from datetime import datetime
 
 from app.configs.database import db
 from app.configs.fake_generator import FakeProvider
-from app.reports import DATABASE_PATH
+from app.reports import DATABASE_PATH_SALES
 from faker import Faker
 from flask_sqlalchemy.model import Model
 from ipdb import set_trace
@@ -152,6 +152,21 @@ def create_fake_account(amount: int):
     }
 
 
+def create_fake_account_product(account_data: dict):
+    from app.services import ProductServices
+
+    products = ProductServices.get_all_products()
+
+    # import ipdb
+
+    # ipdb.set_trace()
+    return {
+        'id_account': str(account_data['id']),
+        'id_product': fake.random_int(min=1, max=len(products)),
+        'quantity': fake.random_int(min=1, max=3),
+    }
+
+
 def create_sales_report(account_list: list):
     fieldnames = [
         'waiter_id',
@@ -169,7 +184,7 @@ def create_sales_report(account_list: list):
         for data in account_list
     ]
 
-    with open(DATABASE_PATH, 'w') as file:
+    with open(DATABASE_PATH_SALES, 'w') as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(report_data_list)

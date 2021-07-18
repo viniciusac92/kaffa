@@ -1,5 +1,7 @@
 import click
+from app.models.account_product import AccountProductModel
 from app.services import (
+    AccountProductServices,
     AccountServices,
     PaymentMethodServices,
     ProductServices,
@@ -11,6 +13,7 @@ from app.services import (
 from app.services.cashier_service import CashierServices
 from app.services.helper import (
     create_fake_account,
+    create_fake_account_product,
     create_fake_cashier,
     create_fake_payment_methods,
     create_fake_product,
@@ -113,7 +116,15 @@ def cli_account(app: Flask):
                 PaymentMethodServices.create_payment_method(pay_mathods_data)
 
             account_data = create_fake_account(int(amount))
-            AccountServices.create_account(account_data)
+            account_servide_retrieved_data = AccountServices.create_account(
+                account_data
+            )
+
+            for account_product in range(5):
+                account_product_data = create_fake_account_product(
+                    account_servide_retrieved_data
+                )
+                AccountProductServices.create_account_product(account_product_data)
 
         click.echo('New accounts opened')
 
