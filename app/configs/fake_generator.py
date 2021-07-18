@@ -8,6 +8,14 @@ fake = Faker()
 
 class FakeProvider(BaseProvider):
     @staticmethod
+    def username_kaffa():
+        return fake.first_name() + ' ' + str(fake.password(length=9, digits=True))
+
+    @staticmethod
+    def product_name():
+        return FakeProvider.grocery() + ' ' + str(fake.password(length=9, digits=True))
+
+    @staticmethod
     def grocery():
         groceries = [
             'Café expresso',
@@ -21,10 +29,10 @@ class FakeProvider(BaseProvider):
             'Chocolate 50% Cacau',
             'Croissant',
             'Biscoito de nata',
-            'Torta Holandesa',
-            'Folhado de Frango',
+            'Torta holandesa',
+            'Folhado de frango',
             'Waffle',
-            'Pão de Queijo',
+            'Pão de queijo',
             'Bolo de fubá',
         ]
 
@@ -39,6 +47,3 @@ class FakeProvider(BaseProvider):
         ]
 
         return random.choice(payment_methods)
-
-
-fake.add_provider(FakeProvider)
