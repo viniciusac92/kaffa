@@ -1,7 +1,9 @@
+import csv
 from datetime import datetime
 
 from app.configs.database import db
 from app.configs.fake_generator import FakeProvider
+from app.reports import DATABASE_PATH
 from faker import Faker
 from flask_sqlalchemy.model import Model
 from ipdb import set_trace
@@ -150,6 +152,24 @@ def create_fake_account(amount: int):
     }
 
 
-def create_sales_report():
+def create_sales_report(account_list: list):
+    fieldnames = [
+        'waiter_id',
+        'waiter_name',
+        'account_number',
+        'account_status',
+        'product',
+        'product_price',
+        'quantity_ordered',
+        'product_sales_income',
+    ]
 
-    ...
+    report_data_list = [
+        {fieldnames: data for fieldnames, data in zip(fieldnames, data)}
+        for data in account_list
+    ]
+
+    with open(DATABASE_PATH, 'w') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(report_data_list)

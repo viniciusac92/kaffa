@@ -1,20 +1,10 @@
 from http import HTTPStatus
 
 from app.configs.database import db
-from app.models import (
-    AccountModel,
-    AccountProductModel,
-    ManagerModel,
-    OperatorCashierModel,
-    OperatorModel,
-    PaymentMethodModel,
-    ProductModel,
-    UserModel,
-    WaiterModel,
-)
+from app.models import AccountModel, AccountProductModel, ProductModel, WaiterModel
+from app.services.helper import create_sales_report
 from flask import Blueprint
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from sqlalchemy.sql import operators
 
 bp = Blueprint('bp_sales_report', __name__, url_prefix='/api')
 
@@ -29,33 +19,31 @@ def create():
 
     account_list = (
         session.query(
+            WaiterModel.id,
             WaiterModel.name,
             AccountModel.id,
+            AccountModel.is_finished,
             ProductModel.name,
+            ProductModel.price,
+            AccountProductModel.quantity,
             ProductModel.price * AccountProductModel.quantity,
         )
         .join(AccountModel, AccountModel.id_waiter == WaiterModel.id)
         .join(AccountProductModel, AccountProductModel.id_account == AccountModel.id)
         .join(ProductModel, ProductModel.id == AccountProductModel.id_product)
+        .filter(AccountModel.is_finished == False)
         .all()
     )
 
-    # data2 = [
-    #     {
-    #         "id": info.id,
-    #         "data": info.date,
-    #         "caixa": info.id_cashier,
-    #         "garcom": info.waiter.name,
-    #         "mesa": info.id_table,
-    #         "forma_de_pagamento": info.payment_method.name,
-    #     }
-    #     for info in account_list
-    # ]
+    if len(account_list) == 0:
+        return {"message": "No open accounts"}, HTTPStatus.OK
 
-    data2_2 = [info for info in account_list]
+    # data2_2 = [info for info in account_list]
 
-    import ipdb
+    create_sales_report(account_list)
 
-    ipdb.set_trace()
+    # import ipdb
+
+    # ipdb.set_trace()
 
     return {"message": "Csv file created"}, HTTPStatus.OK
