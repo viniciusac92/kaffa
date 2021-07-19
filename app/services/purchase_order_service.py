@@ -1,8 +1,10 @@
+from sqlalchemy import and_
+from app.models.product_model import ProductModel
 from app.custom_errors import required_key
 from app.custom_errors.not_found import NotFoundError
 
-from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import PurchaseOrderModel
+from ..custom_errors import MissingKeyError, RequiredKeyError, PurchaseClosedError
+from ..models import PurchaseOrderModel, ProductPurchaseOrderModel
 from .helper import (
     add_commit,
     delete_commit,
@@ -41,13 +43,13 @@ class PurchaseOrderServices:
     @staticmethod
     def get_by_id(id):
 
-        # return get_one(PurchaseOrderModel, id)
+        return get_one(PurchaseOrderModel, id)
 
-        purchase_order: PurchaseOrderModel = get_one(PurchaseOrderModel, id)
-        purchase_order.close_order()
-        update_model(purchase_order, {"total_value": purchase_order.total_value})
+        # purchase_order: PurchaseOrderModel = get_one(PurchaseOrderModel, id)
+        # purchase_order.close_order()
+        # update_model(purchase_order, {"total_value": purchase_order.total_value})
 
-        return purchase_order
+        # return purchase_order
 
     @staticmethod
     def update_purchase_order(data: dict, id):
@@ -58,7 +60,10 @@ class PurchaseOrderServices:
         if not get_one(PurchaseOrderModel, id):
             raise NotFoundError
 
-        purchase_order = get_one(PurchaseOrderModel, id)
+        purchase_order: PurchaseOrderModel = get_one(PurchaseOrderModel, id)
+        if purchase_order.is_finished:
+            raise PurchaseClosedError()
+
         update_model(purchase_order, data)
 
         return get_one(PurchaseOrderModel, id)
@@ -71,3 +76,29 @@ class PurchaseOrderServices:
 
         purchase_order = get_one(PurchaseOrderModel, id)
         delete_commit(purchase_order)
+
+    @staticmethod
+    def close_purchase_order(id):
+        purchase_order: PurchaseOrderModel = get_one(PurchaseOrderModel, id)
+        purchase_order.close_order()
+        update_model(purchase_order, {"total_value": purchase_order.total_value})
+
+        return {
+            "id": purchase_order.id,
+            "date": purchase_order.date,
+            "id_manager": purchase_order.id_manager,
+            "id_provider": purchase_order.id_provider,
+            "is_finished": purchase_order.is_finished,
+            "total_value": purchase_order.total_value,
+            "products_list": [
+                {
+                    "id": product.id,
+                    "name": product.name,
+                    "quantity": ProductPurchaseOrderModel.query.filter(and_(ProductPurchaseOrderModel.id_order == purchase_order.id, ProductPurchaseOrderModel.id_product == product.id)).first().quantity,
+                    "cost": ProductPurchaseOrderModel.query.filter(and_(ProductPurchaseOrderModel.id_order == purchase_order.id, ProductPurchaseOrderModel.id_product == product.id)).first().cost,
+                    "subtotal": ProductPurchaseOrderModel.query.filter(and_(ProductPurchaseOrderModel.id_order == purchase_order.id, ProductPurchaseOrderModel.id_product == product.id)).first().quantity * ProductPurchaseOrderModel.query.filter(and_(ProductPurchaseOrderModel.id_order == purchase_order.id, ProductPurchaseOrderModel.id_product == product.id)).first().cost
+                }
+                for product in purchase_order.products_list
+            ]
+
+        }

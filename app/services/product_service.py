@@ -16,7 +16,7 @@ from .helper import (
 
 class ProductServices:
 
-    required_fields = ["name", "description", "price", "stock"]
+    required_fields = ["name", "description", "price"]
 
     @staticmethod
     def create_product(data: dict):

@@ -37,7 +37,7 @@ class AccountProductServices:
             raise OutOfStockError(product.name)
 
         account: AccountModel = AccountModel.query.get(data["id_account"])
-        if account.is_finished:
+        if account.status != "opened":
             raise AccountClosedError()
 
         account_product: AccountProductModel = AccountProductModel(**data)

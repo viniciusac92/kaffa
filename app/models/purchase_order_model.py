@@ -51,7 +51,7 @@ class PurchaseOrderModel(db.Model):
                     ProductPurchaseOrderModel.id_product == product.id, ProductPurchaseOrderModel.id_order == self.id)).first()
                 product.add_to_stock(product_purchase_order.quantity)
                 order_value = order_value + \
-                    (product.price * product_purchase_order.quantity)
+                    (product_purchase_order.cost * product_purchase_order.quantity)
             
             self.is_finished = True
             self.total_value = order_value

@@ -1,7 +1,7 @@
 from app.custom_errors import required_key
 from app.custom_errors.not_found import NotFoundError
 
-from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..custom_errors import MissingKeyError, RequiredKeyError, PurchaseClosedError
 from ..models import ProductPurchaseOrderModel, PurchaseOrderModel
 from .helper import (
     add_commit,
@@ -16,7 +16,7 @@ from .helper import (
 
 class ProductPurchaseOrderServices:
 
-    required_fields = ["id_order", "id_product", "quantity"]
+    required_fields = ["id_order", "id_product", "quantity", "cost"]
 
     @staticmethod
     def create_product_purchase_order(data: dict):

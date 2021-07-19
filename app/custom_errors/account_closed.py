@@ -4,7 +4,7 @@ class AccountClosedError(Exception):
     def __init__(self) -> None:
         self.message = (
             {"error":{
-                "message": "cannot include new products in a closed account",
+                "message": "cannot include new products in a closed/finished account",
             }},
             HTTPStatus.BAD_REQUEST
         )

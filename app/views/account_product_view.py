@@ -18,8 +18,8 @@ bp = Blueprint('bp_account_product', __name__, url_prefix='/api')
 @bp.route("/account_product", methods=["POST"])
 @jwt_required()
 def create():
-    if get_jwt_identity()["type"] != 2:
-        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+    # if get_jwt_identity()["type"] != 2:
+    #     return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     data = request.get_json()
 

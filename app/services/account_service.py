@@ -49,7 +49,8 @@ class AccountServices:
             "waiter": WaiterModel.query.get(bill.id_waiter).name,
             "id_table": bill.id_table,
             "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
-            "is_finished": bill.is_finished,
+            "status": bill.status,
+            "total_value": bill.total_value,
             "product_list": [
                 {
                     "id": product.id,
@@ -57,6 +58,14 @@ class AccountServices:
                     "description": product.description,
                     "price": product.price,
                     "quantity": AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
+                    "subtotal": product.price * AccountProductModel.query.filter(
                         and_(
                             AccountProductModel.id_product == product.id,
                             AccountProductModel.id_account == bill.id,
@@ -84,7 +93,8 @@ class AccountServices:
                 "payment_method": PaymentMethodModel.query.get(
                     bill.id_payment_method
                 ).name,
-                "is_finished": bill.is_finished,
+                "status": bill.status,
+                "total_value": bill.total_value,
                 "product_list": [
                     {
                         "id": product.id,
@@ -99,6 +109,14 @@ class AccountServices:
                         )
                         .first()
                         .quantity,
+                        "subtotal": product.price * AccountProductModel.query.filter(
+                            and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
                     }
                     for product in bill.product_list
                 ],
@@ -110,7 +128,6 @@ class AccountServices:
     def get_by_id(id):
 
         bill = get_one(AccountModel, id)
-        update_model(bill, {"is_finished": True})
 
         return {
             "id": bill.id,
@@ -119,7 +136,8 @@ class AccountServices:
             "waiter": WaiterModel.query.get(bill.id_waiter).name,
             "id_table": bill.id_table,
             "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
-            "is_finished": bill.is_finished,
+            "status": bill.status,
+            "total_value": bill.total_value,
             "product_list": [
                 {
                     "id": product.id,
@@ -127,6 +145,14 @@ class AccountServices:
                     "description": product.description,
                     "price": product.price,
                     "quantity": AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
+                    "subtotal": product.price * AccountProductModel.query.filter(
                         and_(
                             AccountProductModel.id_product == product.id,
                             AccountProductModel.id_account == bill.id,
@@ -148,11 +174,14 @@ class AccountServices:
         if not get_one(AccountModel, id):
             raise NotFoundError
 
-        user = get_one(AccountModel, id)
-        update_model(user, data)
+        # user = get_one(AccountModel, id)
+        # update_model(user, data)
 
         # return get_one(AccountModel, id)
+        # bill = get_one(AccountModel, id)
+
         bill = get_one(AccountModel, id)
+        update_model(bill, data)
 
         return {
             "id": bill.id,
@@ -161,7 +190,8 @@ class AccountServices:
             "waiter": WaiterModel.query.get(bill.id_waiter).name,
             "id_table": bill.id_table,
             "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
-            "is_finished": bill.is_finished,
+            "status": bill.status,
+            "total_value": bill.total_value,
             "product_list": [
                 {
                     "id": product.id,
@@ -169,6 +199,14 @@ class AccountServices:
                     "description": product.description,
                     "price": product.price,
                     "quantity": AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
+                    "subtotal": product.price * AccountProductModel.query.filter(
                         and_(
                             AccountProductModel.id_product == product.id,
                             AccountProductModel.id_account == bill.id,
@@ -193,3 +231,48 @@ class AccountServices:
     @staticmethod
     def found_account(username):
         return AccountModel.query.filter_by(username=username).first()
+
+    @staticmethod
+    def close_account(id):
+
+        bill: AccountModel = get_one(AccountModel, id)
+        bill.close_bill()
+        update_model(bill, {"is_finished": True})
+
+        return {
+            "id": bill.id,
+            "date": bill.date,
+            "id_cashier": bill.id_cashier,
+            "waiter": WaiterModel.query.get(bill.id_waiter).name,
+            "id_table": bill.id_table,
+            "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
+            "status": bill.status,
+            "total_value": bill.total_value,
+            "product_list": [
+                {
+                    "id": product.id,
+                    "name": product.name,
+                    "description": product.description,
+                    "price": product.price,
+                    "quantity": AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
+                    "subtotal": product.price * AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
+                    
+                    
+                }
+                for product in bill.product_list
+            ],
+        }
