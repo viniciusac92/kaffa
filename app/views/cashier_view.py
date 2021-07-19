@@ -74,3 +74,18 @@ def delete(id):
         return e.message
 
     return "", HTTPStatus.NO_CONTENT
+
+
+
+@bp.route("/cashier/<int:id>/cash_balance", methods=["GET"])
+@jwt_required()
+def cash_balance(id):
+
+    try:
+        return jsonify(CashierServices.cash_balance(id)), HTTPStatus.OK
+
+    except NotFoundError as e:
+        return e.message
+
+    except RequiredKeyError as e:
+        return e.message

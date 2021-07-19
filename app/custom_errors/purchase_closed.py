@@ -4,7 +4,7 @@ class PurchaseClosedError(Exception):
     def __init__(self) -> None:
         self.message = (
             {"error":{
-                "message": "cannot include new products in a finished purchase",
+                "message": "cannot change a finished purchase",
             }},
             HTTPStatus.BAD_REQUEST
         )

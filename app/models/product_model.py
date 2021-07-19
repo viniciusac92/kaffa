@@ -21,7 +21,7 @@ class ProductModel(db.Model):
     name = Column(String(50), nullable=False, unique=True)
     description = Column(String(200), nullable=True)
     price = Column(Float, nullable=False)
-    stock = Column(Integer, nullable=False)
+    stock = Column(Integer, default=0)
 
     def add_to_stock(self, qt):
         self.stock = self.stock + qt

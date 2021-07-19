@@ -47,11 +47,8 @@ class CashierServices:
     @staticmethod
     def get_by_id(id):
 
-        # return get_one(CashierModel, id)
-        cashier = get_one(CashierModel, id)
-        update_model(cashier, {"balance": cashier.update_balance_all_bills()})
+        return get_one(CashierModel, id)
 
-        return cashier
 
     @staticmethod
     def update_cashier(data: dict, id):
@@ -75,3 +72,12 @@ class CashierServices:
 
         cashier = get_one(CashierModel, id)
         delete_commit(cashier)
+
+
+    @staticmethod
+    def cash_balance(id):
+
+        cashier = get_one(CashierModel, id)
+        update_model(cashier, {"balance": cashier.update_balance_all_bills()})
+
+        return cashier

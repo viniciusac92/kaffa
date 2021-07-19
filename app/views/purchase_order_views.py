@@ -3,7 +3,7 @@ from http import HTTPStatus
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from ..custom_errors import MissingKeyError, NotFoundError, RequiredKeyError
+from ..custom_errors import MissingKeyError, NotFoundError, RequiredKeyError, PurchaseClosedError
 from ..services import PurchaseOrderServices
 
 bp = Blueprint('bp_purchase_order', __name__, url_prefix='/api')
@@ -65,6 +65,9 @@ def update(id):
         return e.message
 
     except RequiredKeyError as e:
+        return e.message
+
+    except PurchaseClosedError as e:
         return e.message
 
 

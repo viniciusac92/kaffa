@@ -3,7 +3,7 @@ from app.models.product_model import ProductModel
 from app.custom_errors import required_key
 from app.custom_errors.not_found import NotFoundError
 
-from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..custom_errors import MissingKeyError, RequiredKeyError, PurchaseClosedError
 from ..models import PurchaseOrderModel, ProductPurchaseOrderModel
 from .helper import (
     add_commit,
@@ -60,7 +60,10 @@ class PurchaseOrderServices:
         if not get_one(PurchaseOrderModel, id):
             raise NotFoundError
 
-        purchase_order = get_one(PurchaseOrderModel, id)
+        purchase_order: PurchaseOrderModel = get_one(PurchaseOrderModel, id)
+        if purchase_order.is_finished:
+            raise PurchaseClosedError()
+
         update_model(purchase_order, data)
 
         return get_one(PurchaseOrderModel, id)
