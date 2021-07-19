@@ -81,3 +81,23 @@ def delete(id):
         return e.message
 
     return "", HTTPStatus.NO_CONTENT
+
+@bp.route("/purchase_order/<int:id>/close_order", methods=["GET"])
+@jwt_required()
+def close_purchase_order(id):
+    if get_jwt_identity()["type"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+
+    # data = request.get_json()
+
+    try:
+        return (
+            jsonify(PurchaseOrderServices.close_purchase_order(id)),
+            HTTPStatus.OK,
+        )
+
+    except NotFoundError as e:
+        return e.message
+
+    except RequiredKeyError as e:
+        return e.message
