@@ -89,3 +89,21 @@ def cash_balance(id):
 
     except RequiredKeyError as e:
         return e.message
+
+@bp.route("/cashier/<int:id>/cash_withdrawal", methods=["GET"])
+@jwt_required()
+def cash_withdrawal(id):
+
+    data = request.get_json()
+
+    try:
+        return jsonify(CashierServices.cash_withdrawal(data, id)), HTTPStatus.OK
+
+    # except NotFoundError as e:
+    #     return e.message
+
+    except RequiredKeyError as e:
+        return e.message
+
+    except MissingKeyError as e:
+        return e.message

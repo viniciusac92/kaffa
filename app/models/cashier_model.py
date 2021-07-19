@@ -25,8 +25,8 @@ class CashierModel(db.Model):
         accum = 0
 
         for account in self.account_list:
-            if not account.is_finished:
-                account.close_bill()
+            if account.status == "closed":
+                account.status = "finished"
                 accum = accum + account.total_value
 
         self.balance = round((self.balance + accum), 2)

@@ -49,7 +49,8 @@ class AccountServices:
             "waiter": WaiterModel.query.get(bill.id_waiter).name,
             "id_table": bill.id_table,
             "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
-            "is_finished": bill.is_finished,
+            "status": bill.status,
+            "total_value": bill.total_value,
             "product_list": [
                 {
                     "id": product.id,
@@ -92,7 +93,8 @@ class AccountServices:
                 "payment_method": PaymentMethodModel.query.get(
                     bill.id_payment_method
                 ).name,
-                "is_finished": bill.is_finished,
+                "status": bill.status,
+                "total_value": bill.total_value,
                 "product_list": [
                     {
                         "id": product.id,
@@ -134,7 +136,8 @@ class AccountServices:
             "waiter": WaiterModel.query.get(bill.id_waiter).name,
             "id_table": bill.id_table,
             "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
-            "is_finished": bill.is_finished,
+            "status": bill.status,
+            "total_value": bill.total_value,
             "product_list": [
                 {
                     "id": product.id,
@@ -187,7 +190,8 @@ class AccountServices:
             "waiter": WaiterModel.query.get(bill.id_waiter).name,
             "id_table": bill.id_table,
             "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
-            "is_finished": bill.is_finished,
+            "status": bill.status,
+            "total_value": bill.total_value,
             "product_list": [
                 {
                     "id": product.id,
@@ -242,7 +246,7 @@ class AccountServices:
             "waiter": WaiterModel.query.get(bill.id_waiter).name,
             "id_table": bill.id_table,
             "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
-            "is_finished": bill.is_finished,
+            "status": bill.status,
             "total_value": bill.total_value,
             "product_list": [
                 {
