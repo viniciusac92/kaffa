@@ -26,11 +26,14 @@ class CashierModel(db.Model):
 
         for account in self.account_list:
             if not account.is_finished:
-                accum = accum + account.close_bill()
+                account.close_bill()
+                accum = accum + account.total_value
 
-        self.balance = round(accum, 2)
+        self.balance = round((self.balance + accum), 2)
 
         return self.balance
 
     def remove_from_balance(self, value):
         self.balance = self.balance - value
+
+    
