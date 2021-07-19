@@ -1,17 +1,29 @@
+from app.custom_errors import required_key
+from app.custom_errors.not_found import NotFoundError
 from sqlalchemy import and_
 
-from app.custom_errors.not_found import NotFoundError
-from app.custom_errors import required_key
 from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import AccountModel, AccountProductModel, WaiterModel, PaymentMethodModel
-from . import (add_commit, get_all, get_one, verify_recieved_keys,
-               update_model, delete_commit, verify_missing_key)
+from ..models import AccountModel, AccountProductModel, PaymentMethodModel, WaiterModel
+from .helper import (
+    add_commit,
+    delete_commit,
+    get_all,
+    get_one,
+    update_model,
+    verify_missing_key,
+    verify_recieved_keys,
+)
 
 
 class AccountServices:
 
-    required_fields = ["date", "id_cashier",
-                       "id_waiter", "id_table", "id_payment_method"]
+    required_fields = [
+        "date",
+        "id_cashier",
+        "id_waiter",
+        "id_table",
+        "id_payment_method",
+    ]
 
     @staticmethod
     def create_account(data: dict):
@@ -44,10 +56,17 @@ class AccountServices:
                     "name": product.name,
                     "description": product.description,
                     "price": product.price,
-                    "quantity": AccountProductModel.query.filter(and_(AccountProductModel.id_product == product.id, AccountProductModel.id_account == bill.id)).first().quantity
+                    "quantity": AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
                 }
                 for product in bill.product_list
-            ]
+            ],
         }
 
     @staticmethod
@@ -62,7 +81,9 @@ class AccountServices:
                 "id_cashier": bill.id_cashier,
                 "waiter": WaiterModel.query.get(bill.id_waiter).name,
                 "id_table": bill.id_table,
-                "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
+                "payment_method": PaymentMethodModel.query.get(
+                    bill.id_payment_method
+                ).name,
                 "is_finished": bill.is_finished,
                 "product_list": [
                     {
@@ -70,10 +91,17 @@ class AccountServices:
                         "name": product.name,
                         "description": product.description,
                         "price": product.price,
-                        "quantity": AccountProductModel.query.filter(and_(AccountProductModel.id_product == product.id, AccountProductModel.id_account == bill.id)).first().quantity
+                        "quantity": AccountProductModel.query.filter(
+                            and_(
+                                AccountProductModel.id_product == product.id,
+                                AccountProductModel.id_account == bill.id,
+                            )
+                        )
+                        .first()
+                        .quantity,
                     }
                     for product in bill.product_list
-                ]
+                ],
             }
             for bill in bill_list
         ]
@@ -98,10 +126,17 @@ class AccountServices:
                     "name": product.name,
                     "description": product.description,
                     "price": product.price,
-                    "quantity": AccountProductModel.query.filter(and_(AccountProductModel.id_product == product.id, AccountProductModel.id_account == bill.id)).first().quantity
+                    "quantity": AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
                 }
                 for product in bill.product_list
-            ]
+            ],
         }
 
     @staticmethod
@@ -133,10 +168,17 @@ class AccountServices:
                     "name": product.name,
                     "description": product.description,
                     "price": product.price,
-                    "quantity": AccountProductModel.query.filter(and_(AccountProductModel.id_product == product.id, AccountProductModel.id_account == bill.id)).first().quantity
+                    "quantity": AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
                 }
                 for product in bill.product_list
-            ]
+            ],
         }
 
     @staticmethod
