@@ -9,7 +9,7 @@ from . import (add_commit, get_all, get_one, verify_recieved_keys,
 
 class ProductPurchaseOrderServices:
 
-    required_fields = ["id_order", "id_product", "quantity"]
+    required_fields = ["id_order", "id_product", "quantity", "cost"]
 
     @staticmethod
     def create_product_purchase_order(data: dict):
