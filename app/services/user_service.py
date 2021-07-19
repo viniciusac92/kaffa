@@ -6,7 +6,7 @@ from app.services.waiter_service import WaiterServices
 from ipdb import set_trace
 
 from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import UserModel
+from ..models import UserModel, ManagerModel, OperatorModel, WaiterModel
 from .helper import (
     add_commit,
     delete_commit,
@@ -96,7 +96,20 @@ class UserServices:
         if not get_one(UserModel, id):
             raise NotFoundError
 
-        user = get_one(UserModel, id)
+        user: UserModel = get_one(UserModel, id)
+
+        if user.type == 1:
+            manager = ManagerModel.query.filter(ManagerModel.id_user == user.id).first()
+            ManagerServices.delete_manager(manager.id)
+
+        if user.type == 2:
+            waiter = WaiterModel.query.filter(WaiterModel.id_user == user.id).first()
+            WaiterServices.delete_waiter(waiter.id)
+
+        if user.type == 3:
+            operator = OperatorModel.query.filter(OperatorModel.id_user == user.id).first()
+            OperatorServices.delete_operator(operator.id)
+
         delete_commit(user)
 
     @staticmethod
