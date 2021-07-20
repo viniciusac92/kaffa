@@ -1,5 +1,5 @@
 from ..services import ProductPurchaseOrderServices
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, PurchaseClosedError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, PurchaseClosedError, FkNotFoundError
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, request, jsonify
@@ -27,6 +27,9 @@ def create():
         return e.message
 
     except PurchaseClosedError as e:
+        return e.message
+
+    except FkNotFoundError as e:
         return e.message
 
 @bp.route("/product_purchase_order", methods=["GET"])

@@ -1,10 +1,7 @@
 from sqlalchemy import and_
-from app.models.product_model import ProductModel
-from app.custom_errors import required_key
-from app.custom_errors.not_found import NotFoundError
 
-from ..custom_errors import MissingKeyError, RequiredKeyError, PurchaseClosedError
-from ..models import PurchaseOrderModel, ProductPurchaseOrderModel
+from ..custom_errors import MissingKeyError, RequiredKeyError, PurchaseClosedError, NotFoundError, FkNotFoundError
+from ..models import PurchaseOrderModel, ProductPurchaseOrderModel, ManagerModel, ProviderModel
 from .helper import (
     add_commit,
     delete_commit,
@@ -29,6 +26,12 @@ class PurchaseOrderServices:
         if verify_recieved_keys(data, PurchaseOrderServices.required_fields):
             raise RequiredKeyError(data, PurchaseOrderServices.required_fields)
 
+        if not get_one(ManagerModel, data["id_manager"]):
+            raise FkNotFoundError("id_manager")
+
+        if not get_one(ProviderModel, data["id_provider"]):
+            raise FkNotFoundError("id_provider")
+
         purchase_order = PurchaseOrderModel(**data)
 
         add_commit(purchase_order)
@@ -43,13 +46,13 @@ class PurchaseOrderServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(PurchaseOrderModel, id)
+        purchase_order = get_one(PurchaseOrderModel, id)
 
-        # purchase_order: PurchaseOrderModel = get_one(PurchaseOrderModel, id)
-        # purchase_order.close_order()
-        # update_model(purchase_order, {"total_value": purchase_order.total_value})
+        if not purchase_order:
+            raise NotFoundError
 
-        # return purchase_order
+        return purchase_order
+
 
     @staticmethod
     def update_purchase_order(data: dict, id):
@@ -80,6 +83,10 @@ class PurchaseOrderServices:
     @staticmethod
     def close_purchase_order(id):
         purchase_order: PurchaseOrderModel = get_one(PurchaseOrderModel, id)
+
+        if not purchase_order:
+            raise NotFoundError
+
         purchase_order.close_order()
         update_model(purchase_order, {"total_value": purchase_order.total_value})
 

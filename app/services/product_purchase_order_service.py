@@ -1,8 +1,5 @@
-from app.custom_errors import required_key
-from app.custom_errors.not_found import NotFoundError
-
-from ..custom_errors import MissingKeyError, RequiredKeyError, PurchaseClosedError
-from ..models import ProductPurchaseOrderModel, PurchaseOrderModel
+from ..custom_errors import MissingKeyError, RequiredKeyError, PurchaseClosedError, FkNotFoundError, NotFoundError
+from ..models import ProductPurchaseOrderModel, PurchaseOrderModel, ProductModel
 from .helper import (
     add_commit,
     delete_commit,
@@ -27,6 +24,12 @@ class ProductPurchaseOrderServices:
         if verify_recieved_keys(data, ProductPurchaseOrderServices.required_fields):
             raise RequiredKeyError(data, ProductPurchaseOrderServices.required_fields)
 
+        if not get_one(PurchaseOrderModel, data["id_order"]):
+            raise FkNotFoundError("id_order")
+
+        if not get_one(ProductModel, data["id_product"]):
+            raise FkNotFoundError("id_product")
+
         purchase_order: PurchaseOrderModel = PurchaseOrderModel.query.get(
             data["id_order"]
         )
@@ -47,7 +50,12 @@ class ProductPurchaseOrderServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(ProductPurchaseOrderModel, id)
+        product_purchase_order = get_one(ProductPurchaseOrderModel, id)
+
+        if not product_purchase_order:
+            raise NotFoundError
+
+        return product_purchase_order
 
     @staticmethod
     def update_product_purchase_order(data: dict, id):
