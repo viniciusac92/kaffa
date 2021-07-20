@@ -75,3 +75,19 @@ def delete(id):
         return e.message
 
     return "", HTTPStatus.NO_CONTENT
+
+
+@bp.route("/account/<int:id>/close_account", methods=["GET"])
+@jwt_required()
+def close_account(id):
+    if get_jwt_identity()["type"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+
+    try:
+        return jsonify(AccountServices.close_account(id)), HTTPStatus.OK
+
+    except NotFoundError as e:
+        return e.message
+
+    except RequiredKeyError as e:
+        return e.message

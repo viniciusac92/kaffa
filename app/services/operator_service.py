@@ -13,7 +13,7 @@ from .helper import (
     verify_recieved_keys,
 )
 
-
+import ipdb
 class OperatorServices:
 
     required_fields = ["name", "cpf", "id_user"]
@@ -64,4 +64,7 @@ class OperatorServices:
             raise NotFoundError
 
         operator = get_one(OperatorModel, id)
+
+        # ipdb.set_trace()
+
         delete_commit(operator)
