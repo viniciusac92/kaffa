@@ -1,8 +1,6 @@
-from app.custom_errors import required_key
-from app.custom_errors.not_found import NotFoundError
-
-from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import ProviderProductModel
+# from operator import ge
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, FkNotFoundError
+from ..models import ProviderProductModel, ProductModel, ProviderModel
 from .helper import (
     add_commit,
     delete_commit,
@@ -27,6 +25,12 @@ class ProviderProductServices:
         if verify_recieved_keys(data, ProviderProductServices.required_fields):
             raise RequiredKeyError(data, ProviderProductServices.required_fields)
 
+        if not get_one(ProductModel, data["id_product"]):
+            raise FkNotFoundError("id_product")
+
+        if not get_one(ProviderModel, data["id_provider"]):
+            raise FkNotFoundError("id_provider")
+
         provider_product = ProviderProductModel(**data)
 
         add_commit(provider_product)
@@ -41,7 +45,12 @@ class ProviderProductServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(ProviderProductModel, id)
+        provider_product = get_one(ProviderProductModel, id)
+
+        if not provider_product:
+            raise NotFoundError
+
+        return provider_product
 
     @staticmethod
     def update_provider_product(data: dict, id):

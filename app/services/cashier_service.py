@@ -1,7 +1,4 @@
-from app.custom_errors import required_key
-from app.custom_errors.not_found import NotFoundError
-
-from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
 from ..models import CashierModel
 from .helper import (
     add_commit,
@@ -44,7 +41,12 @@ class CashierServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(CashierModel, id)
+        cashier = get_one(CashierModel, id)
+
+        if not cashier:
+            raise NotFoundError
+
+        return cashier
 
 
     @staticmethod
@@ -76,6 +78,10 @@ class CashierServices:
     def cash_balance(id):
 
         cashier: CashierModel = get_one(CashierModel, id)
+
+        if not cashier:
+            raise NotFoundError
+
         update_model(cashier, {"balance": cashier.update_balance_all_bills()})
 
         return cashier
@@ -91,6 +97,10 @@ class CashierServices:
             raise RequiredKeyError(data, CashierServices.withdrawal_required_fields)
 
         cashier: CashierModel = get_one(CashierModel, id)
+
+        if not cashier:
+            raise NotFoundError
+
         cashier.remove_from_balance(value=data["value"])
         update_model(cashier, {"balance": cashier.balance})
 

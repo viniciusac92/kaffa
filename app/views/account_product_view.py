@@ -9,6 +9,7 @@ from ..custom_errors import (
     NotFoundError,
     OutOfStockError,
     RequiredKeyError,
+    FkNotFoundError
 )
 from ..services import AccountProductServices
 
@@ -39,6 +40,9 @@ def create():
         return e.message
 
     except AccountClosedError as e:
+        return e.message
+
+    except FkNotFoundError as e:
         return e.message
 
 

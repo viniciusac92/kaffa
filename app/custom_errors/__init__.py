@@ -4,3 +4,5 @@ from .not_found import NotFoundError
 from .out_of_stock import OutOfStockError
 from .account_closed import AccountClosedError
 from .purchase_closed import PurchaseClosedError
+from .unique_key import UniqueKeyError
+from .fk_not_found import FkNotFoundError 
