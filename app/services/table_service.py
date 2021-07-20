@@ -1,7 +1,4 @@
-from app.custom_errors import required_key
-from app.custom_errors.not_found import NotFoundError
-
-from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, UniqueKeyError
 from ..models import TableModel
 from .helper import (
     add_commit,
@@ -11,12 +8,14 @@ from .helper import (
     update_model,
     verify_missing_key,
     verify_recieved_keys,
+    verify_unique_keys,
 )
 
 
 class TableServices:
 
     required_fields = ["number"]
+    unique_keys = ["number"]
 
     @staticmethod
     def create_table(data: dict):
@@ -26,6 +25,9 @@ class TableServices:
 
         if verify_recieved_keys(data, TableServices.required_fields):
             raise RequiredKeyError(data, TableServices.required_fields)
+
+        if verify_unique_keys(data, TableModel, TableServices.unique_keys):
+            raise UniqueKeyError(TableServices.unique_keys)
 
         table = TableModel(**data)
 
@@ -41,7 +43,12 @@ class TableServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(TableModel, id)
+        table = get_one(TableModel, id)
+
+        if not table:
+            raise NotFoundError
+
+        return table
 
     @staticmethod
     def update_table(data: dict, id):

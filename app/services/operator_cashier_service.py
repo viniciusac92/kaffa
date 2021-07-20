@@ -1,8 +1,5 @@
-from app.custom_errors import required_key
-from app.custom_errors.not_found import NotFoundError
-
-from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import OperatorCashierModel
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, FkNotFoundError
+from ..models import OperatorCashierModel, OperatorModel, CashierModel
 from .helper import (
     add_commit,
     delete_commit,
@@ -27,6 +24,12 @@ class OperatorCashierServices:
         if verify_recieved_keys(data, OperatorCashierServices.required_fields):
             raise RequiredKeyError(data, OperatorCashierServices.required_fields)
 
+        if not get_one(OperatorModel, data["id_operator"]):
+            raise FkNotFoundError("id_operator")
+
+        if not get_one(CashierModel, data["id_cashier"]):
+            raise FkNotFoundError("id_cashier")
+
         operator_cashier = OperatorCashierModel(**data)
 
         add_commit(operator_cashier)
@@ -41,7 +44,12 @@ class OperatorCashierServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(OperatorCashierModel, id)
+        operator_cashier = get_one(OperatorCashierModel, id)
+
+        if not operator_cashier:
+            raise NotFoundError
+
+        return operator_cashier
 
     @staticmethod
     def update_operator_cashier(data: dict, id):

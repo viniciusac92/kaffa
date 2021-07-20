@@ -4,9 +4,6 @@ from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
 from datetime import date
 
-import ipdb
-from sqlalchemy.sql.sqltypes import String
-
 from .account_product import AccountProductModel
 
 from app.configs.database import db

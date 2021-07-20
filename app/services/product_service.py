@@ -1,7 +1,4 @@
-from app.custom_errors import required_key
-from app.custom_errors.not_found import NotFoundError
-
-from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, UniqueKeyError
 from ..models import ProductModel
 from .helper import (
     add_commit,
@@ -11,12 +8,14 @@ from .helper import (
     update_model,
     verify_missing_key,
     verify_recieved_keys,
+    verify_unique_keys,
 )
 
 
 class ProductServices:
 
     required_fields = ["name", "description", "price"]
+    unique_keys = ["name"]
 
     @staticmethod
     def create_product(data: dict):
@@ -26,6 +25,9 @@ class ProductServices:
 
         if verify_recieved_keys(data, ProductServices.required_fields):
             raise RequiredKeyError(data, ProductServices.required_fields)
+
+        if verify_unique_keys(data, ProductModel, ProductServices.unique_keys):
+            raise UniqueKeyError(ProductServices.unique_keys)
 
         product = ProductModel(**data)
 
@@ -41,7 +43,12 @@ class ProductServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(ProductModel, id)
+        product = get_one(ProductModel, id)
+
+        if not product:
+            raise NotFoundError
+
+        return product
 
     @staticmethod
     def update_product(data: dict, id):

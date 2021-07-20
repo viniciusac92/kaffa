@@ -1,9 +1,7 @@
-from app.custom_errors import required_key
-from app.custom_errors.not_found import NotFoundError
 from sqlalchemy import and_
 
-from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import AccountModel, AccountProductModel, PaymentMethodModel, WaiterModel
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, FkNotFoundError
+from ..models import AccountModel, AccountProductModel, PaymentMethodModel, WaiterModel, CashierModel, TableModel
 from .helper import (
     add_commit,
     delete_commit,
@@ -14,6 +12,7 @@ from .helper import (
     verify_recieved_keys,
 )
 
+import ipdb
 
 class AccountServices:
 
@@ -34,11 +33,21 @@ class AccountServices:
         if verify_recieved_keys(data, AccountServices.required_fields):
             raise RequiredKeyError(data, AccountServices.required_fields)
 
+        if not get_one(CashierModel, data["id_cashier"]):
+            raise FkNotFoundError("id_cashier")
+
+        if not get_one(WaiterModel, data["id_waiter"]):
+            raise FkNotFoundError("id_waiter")
+
+        if not get_one(TableModel, data["id_table"]):
+            raise FkNotFoundError("id_table")
+
+        if not get_one(PaymentMethodModel, data["id_payment_method"]):
+            raise FkNotFoundError("id_payment_method")
+
         account = AccountModel(**data)
 
         add_commit(account)
-
-        # return get_one(AccountModel, account.id)
 
         bill = get_one(AccountModel, account.id)
 
@@ -129,6 +138,9 @@ class AccountServices:
 
         bill = get_one(AccountModel, id)
 
+        if not bill:
+            raise NotFoundError
+
         return {
             "id": bill.id,
             "date": bill.date,
@@ -173,12 +185,6 @@ class AccountServices:
 
         if not get_one(AccountModel, id):
             raise NotFoundError
-
-        # user = get_one(AccountModel, id)
-        # update_model(user, data)
-
-        # return get_one(AccountModel, id)
-        # bill = get_one(AccountModel, id)
 
         bill = get_one(AccountModel, id)
         update_model(bill, data)
@@ -236,6 +242,10 @@ class AccountServices:
     def close_account(id):
 
         bill: AccountModel = get_one(AccountModel, id)
+
+        if not bill:
+            raise NotFoundError
+
         bill.close_bill()
         update_model(bill, {"is_finished": True})
 

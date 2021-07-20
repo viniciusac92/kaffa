@@ -1,11 +1,10 @@
-from app.custom_errors import required_key
 from app.custom_errors.not_found import NotFoundError
 from app.services.manager_service import ManagerServices
 from app.services.operator_service import OperatorServices
 from app.services.waiter_service import WaiterServices
 from ipdb import set_trace
 
-from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..custom_errors import MissingKeyError, RequiredKeyError, UniqueKeyError
 from ..models import UserModel, ManagerModel, OperatorModel, WaiterModel
 from .helper import (
     add_commit,
@@ -15,12 +14,15 @@ from .helper import (
     update_model,
     verify_missing_key,
     verify_recieved_keys,
+    verify_unique_keys,
 )
 
 
 class UserServices:
 
     required_fields = ["username", "type", "password", "name", "cpf"]
+    user_unique_keys = ["username"]
+    worker_unique_keys = ["cpf"]
 
     @staticmethod
     def create_user(data: dict):
@@ -30,6 +32,21 @@ class UserServices:
 
         if verify_recieved_keys(data, UserServices.required_fields):
             raise RequiredKeyError(data, UserServices.required_fields)
+
+        if verify_unique_keys(data, UserModel, UserServices.user_unique_keys):
+            raise UniqueKeyError(UserServices.user_unique_keys)
+
+        if data["type"] == 1:
+            if verify_unique_keys(data, ManagerModel, UserServices.worker_unique_keys):
+                raise UniqueKeyError(UserServices.worker_unique_keys)
+
+        if data["type"] == 2:
+            if verify_unique_keys(data, WaiterModel, UserServices.worker_unique_keys):
+                raise UniqueKeyError(UserServices.worker_unique_keys)
+
+        if data["type"] == 3:
+            if verify_unique_keys(data, OperatorModel, UserServices.worker_unique_keys):
+                raise UniqueKeyError(UserServices.worker_unique_keys)
 
         name = data.pop('name')
         cpf = data.pop('cpf')
@@ -119,6 +136,7 @@ class UserServices:
     @staticmethod
     def get_by_id(id):
         user = get_one(UserModel, id)
+        
         if not user:
             raise NotFoundError
 

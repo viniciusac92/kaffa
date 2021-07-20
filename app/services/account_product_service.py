@@ -6,6 +6,7 @@ from ..custom_errors import (
     MissingKeyError,
     OutOfStockError,
     RequiredKeyError,
+    FkNotFoundError
 )
 from ..models import AccountModel, AccountProductModel, ProductModel
 from .helper import (
@@ -32,6 +33,12 @@ class AccountProductServices:
         if verify_recieved_keys(data, AccountProductServices.required_fields):
             raise RequiredKeyError(data, AccountProductServices.required_fields)
 
+        if not get_one(AccountModel, data["id_account"]):
+            raise FkNotFoundError("id_account")
+
+        if not get_one(ProductModel, data["id_product"]):
+            raise FkNotFoundError("id_product")
+
         product: ProductModel = ProductModel.query.get(data["id_product"])
         if data["quantity"] > product.stock:
             raise OutOfStockError(product.name)
@@ -54,7 +61,12 @@ class AccountProductServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(AccountProductModel, id)
+        account_product = get_one(AccountProductModel, id)
+
+        if not account_product:
+            raise NotFoundError
+
+        return account_product
 
     @staticmethod
     def update_account_product(data: dict, id):

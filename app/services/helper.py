@@ -222,3 +222,11 @@ def create_purchase_order_report(purchase_order: list):
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(report_purchase_data_list)
+
+
+def verify_unique_keys(data: dict, model: Model, list: list):
+    for attr in list:
+        if model.query.filter_by(**{attr: data[attr]}).first():
+            return True
+        return False 
+    

@@ -42,7 +42,12 @@ class WaiterServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(WaiterModel, id)
+        waiter = get_one(WaiterModel, id)
+
+        if not waiter:
+            raise NotFoundError
+
+        return waiter
 
     @staticmethod
     def update_waiter(data: dict, id):
