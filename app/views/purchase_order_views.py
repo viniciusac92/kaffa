@@ -85,6 +85,9 @@ def delete(id):
     except NotFoundError as e:
         return e.message
 
+    except FkNotFoundError as e:
+        return e.message
+
     return "", HTTPStatus.NO_CONTENT
 
 @bp.route("/purchase_order/<int:id>/close_order", methods=["GET"])
@@ -92,8 +95,6 @@ def delete(id):
 def close_purchase_order(id):
     if get_jwt_identity()["type"] != 1:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
-
-    # data = request.get_json()
 
     try:
         return (

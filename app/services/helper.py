@@ -69,7 +69,7 @@ def create_fake_product(amount: int):
         "price": fake.pyfloat(
             left_digits=2, right_digits=2, positive=True, max_value=100
         ),
-        "stock": fake.random_int(min=1, max=40),
+        # "stock": fake.random_int(min=1, max=40),
     }
 
 

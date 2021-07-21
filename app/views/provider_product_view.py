@@ -1,3 +1,4 @@
+from app.custom_errors.fk_not_found import FkNotFoundError
 from ..services import ProviderProductServices
 from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
 
@@ -24,6 +25,9 @@ def create():
         return e.message
 
     except RequiredKeyError as e:
+        return e.message
+
+    except FkNotFoundError as e:
         return e.message
 
 
@@ -59,6 +63,9 @@ def update(id):
         return e.message
 
     except RequiredKeyError as e:
+        return e.message
+
+    except FkNotFoundError as e:
         return e.message
 
 

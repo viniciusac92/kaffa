@@ -1,5 +1,5 @@
 from ..services import OperatorServices
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, ImmutableAttrError
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, request, jsonify
@@ -59,6 +59,9 @@ def update(id):
         return e.message
 
     except RequiredKeyError as e:
+        return e.message
+
+    except ImmutableAttrError as e:
         return e.message
 
 

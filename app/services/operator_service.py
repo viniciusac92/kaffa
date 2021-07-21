@@ -1,7 +1,4 @@
-from app.custom_errors import required_key
-from app.custom_errors.not_found import NotFoundError
-
-from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, ImmutableAttrError
 from ..models import OperatorModel
 from .helper import (
     add_commit,
@@ -56,6 +53,9 @@ class OperatorServices:
 
         if not get_one(OperatorModel, id):
             raise NotFoundError
+
+        if data.get("id_user"):
+            raise ImmutableAttrError("id_user")
 
         operator = get_one(OperatorModel, id)
         update_model(operator, data)

@@ -1,5 +1,7 @@
+from sqlalchemy import exc
 from ..services import AccountServices
 from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, FkNotFoundError
+from sqlalchemy.exc import IntegrityError
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, request, jsonify
@@ -62,6 +64,9 @@ def update(id):
         return e.message
 
     except RequiredKeyError as e:
+        return e.message
+
+    except FkNotFoundError as e:
         return e.message
 
 

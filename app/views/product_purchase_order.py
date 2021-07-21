@@ -66,6 +66,9 @@ def update(id):
     except RequiredKeyError as e:
         return e.message
 
+    except FkNotFoundError as e:
+        raise e.message
+
 
 @bp.route("/product_purchase_order/<int:id>", methods=["DELETE"])
 @jwt_required()
