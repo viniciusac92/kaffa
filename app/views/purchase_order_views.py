@@ -3,7 +3,7 @@ from http import HTTPStatus
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from ..custom_errors import MissingKeyError, NotFoundError, RequiredKeyError, PurchaseClosedError
+from ..custom_errors import MissingKeyError, NotFoundError, RequiredKeyError, PurchaseClosedError, FkNotFoundError
 from ..services import PurchaseOrderServices
 
 bp = Blueprint('bp_purchase_order', __name__, url_prefix='/api')
@@ -29,6 +29,8 @@ def create():
     except RequiredKeyError as e:
         return e.message
 
+    except FkNotFoundError as e:
+        return e.message
 
 @bp.route("/purchase_order", methods=["GET"])
 @jwt_required()

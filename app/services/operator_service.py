@@ -41,7 +41,12 @@ class OperatorServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(OperatorModel, id)
+        operator = get_one(OperatorModel, id)
+
+        if not operator:
+            raise NotFoundError
+
+        return operator
 
     @staticmethod
     def update_operator(data: dict, id):
@@ -64,7 +69,5 @@ class OperatorServices:
             raise NotFoundError
 
         operator = get_one(OperatorModel, id)
-
-        # ipdb.set_trace()
 
         delete_commit(operator)

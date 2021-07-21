@@ -1,5 +1,7 @@
 from ..services import UserServices
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, UniqueKeyError
+
+from sqlalchemy.exc import IntegrityError
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, request, jsonify
@@ -18,6 +20,9 @@ def create():
 
     try:
         return jsonify(UserServices.create_user(data)), HTTPStatus.CREATED
+ 
+    except UniqueKeyError as e:
+        return e.message
 
     except MissingKeyError as e:
         return e.message

@@ -99,8 +99,8 @@ def cash_withdrawal(id):
     try:
         return jsonify(CashierServices.cash_withdrawal(data, id)), HTTPStatus.OK
 
-    # except NotFoundError as e:
-    #     return e.message
+    except NotFoundError as e:
+        return e.message
 
     except RequiredKeyError as e:
         return e.message
