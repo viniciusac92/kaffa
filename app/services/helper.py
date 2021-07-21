@@ -3,7 +3,7 @@ from datetime import datetime
 
 from app.configs.database import db
 from app.configs.fake_generator import FakeProvider
-from app.reports import DATABASE_PATH_PURCHASING
+from app.reports import DATABASE_PATH_PURCHASING, DATABASE_PATH_SALES
 from faker import Faker
 from flask_sqlalchemy.model import Model
 from ipdb import set_trace
@@ -228,5 +228,4 @@ def verify_unique_keys(data: dict, model: Model, list: list):
     for attr in list:
         if model.query.filter_by(**{attr: data[attr]}).first():
             return True
-        return False 
-    
+        return False
