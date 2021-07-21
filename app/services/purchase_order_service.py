@@ -63,6 +63,14 @@ class PurchaseOrderServices:
         if not get_one(PurchaseOrderModel, id):
             raise NotFoundError
 
+        if data.get("id_manager"):
+            if not get_one(ManagerModel, data["id_manager"]):
+                raise FkNotFoundError("id_manager")
+
+        if data.get("id_provider"):
+            if not get_one(ProviderModel, data["id_provider"]):
+                raise FkNotFoundError("id_provider")
+
         purchase_order: PurchaseOrderModel = get_one(PurchaseOrderModel, id)
         if purchase_order.is_finished:
             raise PurchaseClosedError()

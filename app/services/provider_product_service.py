@@ -61,6 +61,14 @@ class ProviderProductServices:
         if not get_one(ProviderProductModel, id):
             raise NotFoundError
 
+        if data.get("id_product"):
+            if not get_one(ProductModel, data["id_product"]):
+                raise FkNotFoundError("id_product")
+
+        if data.get("id_provider"):
+            if not get_one(ProviderModel, data["id_provider"]):
+                raise FkNotFoundError("id_provider")
+
         provider_product = get_one(ProviderProductModel, id)
         update_model(provider_product, data)
 

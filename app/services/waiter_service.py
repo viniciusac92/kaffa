@@ -1,8 +1,4 @@
-from app.custom_errors import required_key
-from app.custom_errors.not_found import NotFoundError
-from ipdb import set_trace
-
-from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, ImmutableAttrError
 from ..models import WaiterModel
 from .helper import (
     add_commit,
@@ -57,6 +53,9 @@ class WaiterServices:
 
         if not get_one(WaiterModel, id):
             raise NotFoundError
+
+        if data.get("id_user"):
+            raise ImmutableAttrError("id_user")
 
         waiter = get_one(WaiterModel, id)
         update_model(waiter, data)

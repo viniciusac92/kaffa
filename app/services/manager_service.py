@@ -1,4 +1,4 @@
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, ImmutableAttrError
 from ..models import ManagerModel
 from .helper import (
     add_commit,
@@ -11,7 +11,7 @@ from .helper import (
     verify_unique_keys,
 )
 
-# import ipdb
+from http import HTTPStatus
 
 class ManagerServices:
 
@@ -71,6 +71,9 @@ class ManagerServices:
 
         if not get_one(ManagerModel, id):
             raise NotFoundError
+
+        if data.get("id_user"):
+            raise ImmutableAttrError("id_user")
 
         manager = get_one(ManagerModel, id)
         update_model(manager, data)
