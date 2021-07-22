@@ -37,9 +37,6 @@ def get():
     if get_jwt_identity()["type"] != 1:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
-    if get_jwt_identity()["type"] != 1:
-        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
-
     id = request.args.get("id")
     try:
         if id:
