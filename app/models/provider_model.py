@@ -11,7 +11,6 @@ class ProviderModel(db.Model):
     trading_name: str
     cnpj: str
     phone: str
-    product_list: list
 
     __tablename__ = 'provider'
 
@@ -20,6 +19,3 @@ class ProviderModel(db.Model):
     cnpj = Column(String(18), nullable=False, unique=True)
     phone = Column(String(12), nullable=False, unique=True)
 
-    product_list = relationship(
-        'ProductModel', backref=backref('provider_list'), secondary='provider_product'
-    )

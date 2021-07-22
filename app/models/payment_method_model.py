@@ -10,7 +10,7 @@ class PaymentMethodModel(db.Model):
     id: int
     name: str
     description: str
-    account_list: list
+    # account_list: list
 
     __tablename__ = "payment_method"
 

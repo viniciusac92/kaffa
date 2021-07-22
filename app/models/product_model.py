@@ -11,7 +11,7 @@ from app.configs.database import db
 class ProductModel(db.Model):
     id: int
     name: str
-    description: str
+    # description: str
     price: float
     stock: int
 

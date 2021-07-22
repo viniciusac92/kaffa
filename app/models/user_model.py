@@ -11,7 +11,7 @@ class UserModel(db.Model):
     id: int
     username: str
     type: int
-    password_hash: str
+    # password_hash: str
 
     __tablename__ = "user"
 

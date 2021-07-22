@@ -1,5 +1,4 @@
 import csv
-from datetime import datetime
 
 from app.configs.database import db
 from app.configs.fake_generator import FakeProvider
@@ -90,7 +89,6 @@ def create_fake_purchase_order(amount: int):
     return {
         "id_manager": fake.random_int(min=1, max=len(managers)),
         "id_provider": fake.random_int(min=1, max=len(providers)),
-        "date": fake.past_date(start_date='-30d', tzinfo=None),
     }
 
 
@@ -160,7 +158,6 @@ def create_fake_account(amount: int):
     payment_methods = PaymentMethodServices.get_all_payment_method()
 
     return {
-        "date": str(datetime.now().strftime('%d/%m/%Y')),
         "id_cashier": fake.random_int(min=1, max=len(cashiers)),
         "id_waiter": fake.random_int(min=1, max=len(waiters)),
         "id_table": fake.random_int(min=1, max=len(tables)),

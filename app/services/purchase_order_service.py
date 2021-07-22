@@ -15,7 +15,7 @@ from .helper import (
 
 class PurchaseOrderServices:
 
-    required_fields = ["id_manager", "id_provider", "date"]
+    required_fields = ["id_manager", "id_provider"]
 
     @staticmethod
     def create_purchase_order(data: dict):
@@ -51,7 +51,24 @@ class PurchaseOrderServices:
         if not purchase_order:
             raise NotFoundError
 
-        return purchase_order
+        return   {
+            "id": purchase_order.id,
+            "date": purchase_order.date,
+            "id_manager": purchase_order.id_manager,
+            "id_provider": purchase_order.id_provider,
+            "is_finished": purchase_order.is_finished,
+            "total_value": purchase_order.total_value,
+            "products_list": [
+                {
+                    "id": product.id,
+                    "name": product.name,
+                    "quantity": ProductPurchaseOrderModel.query.filter(and_(ProductPurchaseOrderModel.id_order == purchase_order.id, ProductPurchaseOrderModel.id_product == product.id)).first().quantity,
+                    "cost": ProductPurchaseOrderModel.query.filter(and_(ProductPurchaseOrderModel.id_order == purchase_order.id, ProductPurchaseOrderModel.id_product == product.id)).first().cost,
+                    "subtotal": ProductPurchaseOrderModel.query.filter(and_(ProductPurchaseOrderModel.id_order == purchase_order.id, ProductPurchaseOrderModel.id_product == product.id)).first().quantity * ProductPurchaseOrderModel.query.filter(and_(ProductPurchaseOrderModel.id_order == purchase_order.id, ProductPurchaseOrderModel.id_product == product.id)).first().cost
+                }
+                for product in purchase_order.products_list
+            ]
+        }
 
 
     @staticmethod

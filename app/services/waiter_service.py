@@ -1,4 +1,5 @@
 from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, ImmutableAttrError
+from datetime import date
 from ..models import WaiterModel
 from .helper import (
     add_commit,
@@ -10,7 +11,7 @@ from .helper import (
     verify_recieved_keys,
 )
 
-
+from ipdb import set_trace
 class WaiterServices:
 
     required_fields = ["name", "cpf", "id_user"]
@@ -38,12 +39,28 @@ class WaiterServices:
     @staticmethod
     def get_by_id(id):
 
-        waiter = get_one(WaiterModel, id)
+        waiter: WaiterModel = get_one(WaiterModel, id)
 
         if not waiter:
             raise NotFoundError
 
-        return waiter
+        # set_trace()
+
+        return   {
+            "id": waiter.id,
+            "name": waiter.name,
+            "cpf": waiter.cpf,
+            "id_user": waiter.id_user,
+            "account_list": [
+                {
+                    "id": account.id,
+                    "date": account.date,
+                    "status": account.status,
+                    "total_value": account.total_value
+                }
+                for account in waiter.account_list if account.date.strftime("%m/%d/%Y") == date.today().strftime("%m/%d/%Y")
+            ]
+        }
 
     @staticmethod
     def update_waiter(data: dict, id):

@@ -13,13 +13,11 @@ def init_app(app: Flask) -> None:
     from .payment_method_view import bp as bp_payment_method
     from .product_purchase_order import bp as bp_product_purchase_order
     from .product_view import bp as bp_product
-    from .provider_product_view import bp as bp_provider_product
     from .provider_view import bp as bp_provider
     from .purchase_order_views import bp as bp_purchase_order
     from .report_purchase_order_view import bp as bp_report_purchase_order
     from .report_sales_view import bp as bp_report_sales
 
-    # from .stock_product_view import bp as bp_stock_product
     from .table_view import bp as bp_table
     from .user_view import bp as bp_user
     from .waiter_view import bp as bp_waiter
@@ -36,8 +34,6 @@ def init_app(app: Flask) -> None:
     app.register_blueprint(bp_operator)
     app.register_blueprint(bp_product)
     app.register_blueprint(bp_account_product)
-    # app.register_blueprint(bp_stock_product)
-    app.register_blueprint(bp_provider_product)
     app.register_blueprint(bp_operator_cashier)
     app.register_blueprint(bp_purchase_order)
     app.register_blueprint(bp_product_purchase_order)
