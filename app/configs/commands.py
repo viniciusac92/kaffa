@@ -4,7 +4,7 @@ from app.services import (
     AccountServices,
     PaymentMethodServices,
     ProductPurchaseOrderServices,
-    ProductServices,
+    ProductServicesFake,
     ProviderServices,
     PurchaseOrderServices,
     TableServices,
@@ -52,7 +52,7 @@ def cli_product(app: Flask):
     def cli_product_create(amount: int):
         for user in range(int(amount)):
             product_data = create_fake_product(int(amount))
-            ProductServices.create_product(product_data)
+            ProductServicesFake.create_product(product_data)
 
         click.echo('New products created')
 
@@ -94,9 +94,6 @@ def cli_purchase_order(app: Flask):
             ProductPurchaseOrderServices.create_product_purchase_order(
                 product_purchase_order_data
             )
-            # import ipdb
-
-            # ipdb.set_trace()
 
         click.echo('Purchase order made')
 
@@ -112,9 +109,7 @@ def cli_account(app: Flask):
     def cli_account(amount: int):
         for user in range(int(amount)):
             cashier_data = create_fake_cashier()
-            # import ipdb
 
-            # ipdb.set_trace()
             if cashier_data:
                 CashierServices.create_cashier(cashier_data)
 

@@ -14,3 +14,4 @@ from .purchase_order_service import PurchaseOrderServices
 from .table_service import TableServices
 from .user_service import UserServices
 from .waiter_service import WaiterServices
+from .product_service_fake import ProductServicesFake
