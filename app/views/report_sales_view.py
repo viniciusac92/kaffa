@@ -22,7 +22,7 @@ def create():
             WaiterModel.id,
             WaiterModel.name,
             AccountModel.id,
-            AccountModel.is_finished,
+            AccountModel.status,
             ProductModel.name,
             ProductModel.price,
             AccountProductModel.quantity,
