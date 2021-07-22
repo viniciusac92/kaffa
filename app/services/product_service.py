@@ -1,4 +1,9 @@
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, UniqueKeyError
+from ..custom_errors import (
+    MissingKeyError,
+    NotFoundError,
+    RequiredKeyError,
+    UniqueKeyError,
+)
 from ..models import ProductModel
 from .helper import (
     add_commit,
@@ -14,7 +19,7 @@ from .helper import (
 
 class ProductServices:
 
-    required_fields = ["name", "description", "price"]
+    required_fields = ["name", "description", "price", "stock"]
     unique_keys = ["name"]
 
     @staticmethod

@@ -22,7 +22,7 @@ def create():
             WaiterModel.id,
             WaiterModel.name,
             AccountModel.id,
-            AccountModel.is_finished,
+            AccountModel.status,
             ProductModel.name,
             ProductModel.price,
             AccountProductModel.quantity,
@@ -31,7 +31,7 @@ def create():
         .join(AccountModel, AccountModel.id_waiter == WaiterModel.id)
         .join(AccountProductModel, AccountProductModel.id_account == AccountModel.id)
         .join(ProductModel, ProductModel.id == AccountProductModel.id_product)
-        .filter(AccountModel.is_finished == False)
+        .filter(AccountModel.status == 'opened')
         .all()
     )
 

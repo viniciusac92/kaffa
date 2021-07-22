@@ -3,7 +3,7 @@ from datetime import datetime
 
 from app.configs.database import db
 from app.configs.fake_generator import FakeProvider
-from app.reports import DATABASE_PATH_PURCHASING
+from app.reports import DATABASE_PATH_PURCHASING, DATABASE_PATH_SALES
 from faker import Faker
 from flask_sqlalchemy.model import Model
 from ipdb import set_trace
@@ -104,6 +104,9 @@ def create_fake_product_purchase_order(purchase_order_service_retrieved_data: di
         "id_order": purchase_order_service_retrieved_data.id,
         "id_product": fake.random_int(min=1, max=len(products)),
         "quantity": fake.random_int(min=1, max=10),
+        "cost": fake.pyfloat(
+            left_digits=2, right_digits=2, positive=True, max_value=50
+        ),
     }
 
 
@@ -157,7 +160,7 @@ def create_fake_account(amount: int):
     payment_methods = PaymentMethodServices.get_all_payment_method()
 
     return {
-        "date": str(datetime.now().strftime('%d/%m/%Y')),
+        "date": str(datetime.now().strftime('%m/%d/%Y')),
         "id_cashier": fake.random_int(min=1, max=len(cashiers)),
         "id_waiter": fake.random_int(min=1, max=len(waiters)),
         "id_table": fake.random_int(min=1, max=len(tables)),
@@ -228,5 +231,4 @@ def verify_unique_keys(data: dict, model: Model, list: list):
     for attr in list:
         if model.query.filter_by(**{attr: data[attr]}).first():
             return True
-        return False 
-    
+        return False
