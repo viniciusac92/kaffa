@@ -17,22 +17,22 @@ from .helper import (
 )
 
 
-class ProductServices:
+class ProductServicesFake:
 
-    required_fields = ["name", "description", "price"]
+    required_fields = ["name", "description", "price", "stock"]
     unique_keys = ["name"]
 
     @staticmethod
     def create_product(data: dict):
 
-        if verify_missing_key(data, ProductServices.required_fields):
-            raise MissingKeyError(data, ProductServices.required_fields)
+        if verify_missing_key(data, ProductServicesFake.required_fields):
+            raise MissingKeyError(data, ProductServicesFake.required_fields)
 
-        if verify_recieved_keys(data, ProductServices.required_fields):
-            raise RequiredKeyError(data, ProductServices.required_fields)
+        if verify_recieved_keys(data, ProductServicesFake.required_fields):
+            raise RequiredKeyError(data, ProductServicesFake.required_fields)
 
-        if verify_unique_keys(data, ProductModel, ProductServices.unique_keys):
-            raise UniqueKeyError(ProductServices.unique_keys)
+        if verify_unique_keys(data, ProductModel, ProductServicesFake.unique_keys):
+            raise UniqueKeyError(ProductServicesFake.unique_keys)
 
         product = ProductModel(**data)
 
@@ -58,8 +58,8 @@ class ProductServices:
     @staticmethod
     def update_product(data: dict, id):
 
-        if verify_recieved_keys(data, ProductServices.required_fields):
-            raise RequiredKeyError(data, ProductServices.required_fields)
+        if verify_recieved_keys(data, ProductServicesFake.required_fields):
+            raise RequiredKeyError(data, ProductServicesFake.required_fields)
 
         if not get_one(ProductModel, id):
             raise NotFoundError

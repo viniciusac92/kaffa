@@ -49,7 +49,7 @@ def create():
 @bp.route("/account_product", methods=["GET"])
 @jwt_required()
 def get():
-    if get_jwt_identity()["type"] != 1:
+    if get_jwt_identity()["type"] == 3:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     id = request.args.get("id")
@@ -66,7 +66,7 @@ def get():
 @bp.route("/account_product/<int:id>", methods=["PUT", "PATCH"])
 @jwt_required()
 def update(id):
-    if get_jwt_identity()["type"] != 1:
+    if get_jwt_identity()["type"] == 3:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     data = request.get_json()

@@ -69,7 +69,7 @@ def create_fake_product(amount: int):
         "price": fake.pyfloat(
             left_digits=2, right_digits=2, positive=True, max_value=100
         ),
-        # "stock": fake.random_int(min=1, max=40),
+        "stock": fake.random_int(min=1, max=40),
     }
 
 
@@ -160,7 +160,7 @@ def create_fake_account(amount: int):
     payment_methods = PaymentMethodServices.get_all_payment_method()
 
     return {
-        "date": str(datetime.now().strftime('%m/%d/%Y')),
+        "date": str(datetime.now().strftime('%d/%m/%Y')),
         "id_cashier": fake.random_int(min=1, max=len(cashiers)),
         "id_waiter": fake.random_int(min=1, max=len(waiters)),
         "id_table": fake.random_int(min=1, max=len(tables)),

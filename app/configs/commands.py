@@ -4,7 +4,7 @@ from app.services import (
     AccountServices,
     PaymentMethodServices,
     ProductPurchaseOrderServices,
-    ProductServices,
+    ProductServicesFake,
     ProviderServices,
     PurchaseOrderServices,
     TableServices,
@@ -52,7 +52,7 @@ def cli_product(app: Flask):
     def cli_product_create(amount: int):
         for user in range(int(amount)):
             product_data = create_fake_product(int(amount))
-            ProductServices.create_product(product_data)
+            ProductServicesFake.create_product(product_data)
 
         click.echo('New products created')
 

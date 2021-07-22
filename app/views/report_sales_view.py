@@ -36,7 +36,7 @@ def create():
     )
 
     if len(account_list) == 0:
-        return {"message": "No open accounts"}, HTTPStatus.OK
+        return {"message": "No finished accounts"}, HTTPStatus.OK
 
     create_sales_report(account_list)
 
