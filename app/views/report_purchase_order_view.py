@@ -1,15 +1,7 @@
 from http import HTTPStatus
-from os import name
 
 from app.configs.database import db
-from app.models import (
-    AccountModel,
-    AccountProductModel,
-    ProductModel,
-    ProviderModel,
-    PurchaseOrderModel,
-    WaiterModel,
-)
+from app.models import ProductModel, ProviderModel, PurchaseOrderModel
 from app.models.manager_model import ManagerModel
 from app.models.product_purchase_order_model import ProductPurchaseOrderModel
 from app.services.helper import create_purchase_order_report
@@ -20,10 +12,10 @@ bp = Blueprint('bp_report_purchase_order', __name__, url_prefix='/api')
 
 
 @bp.route("/report_purchase_order", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def create():
-    # if get_jwt_identity()["type"] != 1:
-    #     return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+    if get_jwt_identity()["type"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     session = db.session
 
@@ -53,8 +45,5 @@ def create():
         return {"message": "No open purchase orders"}, HTTPStatus.OK
 
     create_purchase_order_report(purchase_order_list)
-    import ipdb
-
-    ipdb.set_trace()
 
     return {"message": "Csv file created"}, HTTPStatus.OK

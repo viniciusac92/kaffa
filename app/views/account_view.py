@@ -14,7 +14,7 @@ bp = Blueprint('bp_account', __name__, url_prefix='/api')
 @bp.route("/account", methods=["POST"])
 @jwt_required()
 def create():
-    if get_jwt_identity()["type"] != 1:
+    if get_jwt_identity()["type"] != 2:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     data = request.get_json()
@@ -35,7 +35,7 @@ def create():
 @bp.route("/account", methods=["GET"])
 @jwt_required()
 def get():
-    if get_jwt_identity()["type"] != 1:
+    if get_jwt_identity()["type"] == 3:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     id = request.args.get("id")
@@ -52,7 +52,7 @@ def get():
 @bp.route("/account/<int:id>", methods=["PUT", "PATCH"])
 @jwt_required()
 def update(id):
-    if get_jwt_identity()["type"] != 1:
+    if get_jwt_identity()["type"] == 3:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     data = request.get_json()
@@ -88,7 +88,7 @@ def delete(id):
 @bp.route("/account/<int:id>/close_account", methods=["GET"])
 @jwt_required()
 def close_account(id):
-    if get_jwt_identity()["type"] != 1:
+    if get_jwt_identity()["type"] != 2:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     try:

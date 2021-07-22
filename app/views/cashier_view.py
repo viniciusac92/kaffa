@@ -31,7 +31,7 @@ def create():
 @bp.route("/cashier", methods=["GET"])
 @jwt_required()
 def get():
-    if get_jwt_identity()["type"] != 1 or get_jwt_identity()["type"] != 3:
+    if get_jwt_identity()["type"] == 2:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     id = request.args.get("id")
