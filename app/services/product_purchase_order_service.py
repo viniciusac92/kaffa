@@ -66,6 +66,14 @@ class ProductPurchaseOrderServices:
         if not get_one(ProductPurchaseOrderModel, id):
             raise NotFoundError
 
+        if data.get("id_order"):
+            if not get_one(PurchaseOrderModel, data["id_order"]):
+                raise FkNotFoundError("id_order")
+
+        if data.get("id_product"):
+            if not get_one(ProductModel, data["id_product"]):
+                raise FkNotFoundError("id_product")
+
         product_purchase_order = get_one(ProductPurchaseOrderModel, id)
         update_model(product_purchase_order, data)
 

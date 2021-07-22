@@ -186,12 +186,28 @@ class AccountServices:
         if not get_one(AccountModel, id):
             raise NotFoundError
 
+        if data.get("id_cashier"):
+            if not get_one(CashierModel, data["id_cashier"]):
+                raise FkNotFoundError("id_cashier")
+
+        if data.get("id_waiter"): 
+            if not get_one(WaiterModel, data["id_waiter"]):
+                raise FkNotFoundError("id_waiter")
+
+        if data.get("id_table"): 
+            if not get_one(TableModel, data["id_table"]):
+                raise FkNotFoundError("id_table")
+
+        if data.get("id_payment_method"): 
+            if not get_one(PaymentMethodModel, data["id_payment_method"]):
+                raise FkNotFoundError("id_payment_method")
+
         bill = get_one(AccountModel, id)
         update_model(bill, data)
 
         return {
             "id": bill.id,
-            "data": bill.data,
+            "date": bill.date,
             "id_cashier": bill.id_cashier,
             "waiter": WaiterModel.query.get(bill.id_waiter).name,
             "id_table": bill.id_table,

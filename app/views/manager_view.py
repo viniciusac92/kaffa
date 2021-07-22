@@ -1,3 +1,4 @@
+from app.custom_errors.immutable_attr import ImmutableAttrError
 from ..services import ManagerServices
 from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
 
@@ -59,6 +60,9 @@ def update(id):
         return e.message
 
     except RequiredKeyError as e:
+        return e.message
+
+    except ImmutableAttrError as e:
         return e.message
 
 

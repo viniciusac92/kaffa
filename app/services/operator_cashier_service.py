@@ -13,7 +13,7 @@ from .helper import (
 
 class OperatorCashierServices:
 
-    required_fields = ["id_operator", "id_cashier", "date"]
+    required_fields = ["id_operator", "id_cashier"]
 
     @staticmethod
     def create_operator_cashier(data: dict):
@@ -59,6 +59,14 @@ class OperatorCashierServices:
 
         if not get_one(OperatorCashierModel, id):
             raise NotFoundError
+
+        if data.get("id_operator"):
+            if not get_one(OperatorModel, data["id_operator"]):
+                raise FkNotFoundError("id_operator")
+
+        if data.get("id_cashier"):
+            if not get_one(CashierModel, data["id_cashier"]):
+                raise FkNotFoundError("id_cashier")
 
         operator_cashier = get_one(OperatorCashierModel, id)
         update_model(operator_cashier, data)

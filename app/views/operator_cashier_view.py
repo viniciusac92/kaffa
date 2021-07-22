@@ -63,6 +63,9 @@ def update(id):
     except RequiredKeyError as e:
         return e.message
 
+    except FkNotFoundError as e:
+        return e.message
+
 
 @bp.route("/operator_cashier/<int:id>", methods=["DELETE"])
 @jwt_required()

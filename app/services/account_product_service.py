@@ -1,12 +1,10 @@
-from app.custom_errors import required_key
-from app.custom_errors.not_found import NotFoundError
-
 from ..custom_errors import (
     AccountClosedError,
     MissingKeyError,
     OutOfStockError,
     RequiredKeyError,
-    FkNotFoundError
+    FkNotFoundError,
+    NotFoundError
 )
 from ..models import AccountModel, AccountProductModel, ProductModel
 from .helper import (
@@ -76,6 +74,14 @@ class AccountProductServices:
 
         if not get_one(AccountProductModel, id):
             raise NotFoundError
+
+        if data.get("id_account"):
+            if not get_one(AccountModel, data["id_account"]):
+                raise FkNotFoundError("id_account")
+
+        if data.get("id_product"):
+            if not get_one(ProductModel, data["id_product"]):
+                raise FkNotFoundError("id_product")
 
         account_product = get_one(AccountProductModel, id)
         update_model(account_product, data)
