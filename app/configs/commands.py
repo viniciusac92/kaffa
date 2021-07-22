@@ -94,9 +94,6 @@ def cli_purchase_order(app: Flask):
             ProductPurchaseOrderServices.create_product_purchase_order(
                 product_purchase_order_data
             )
-            # import ipdb
-
-            # ipdb.set_trace()
 
         click.echo('Purchase order made')
 
@@ -112,9 +109,7 @@ def cli_account(app: Flask):
     def cli_account(amount: int):
         for user in range(int(amount)):
             cashier_data = create_fake_cashier()
-            # import ipdb
 
-            # ipdb.set_trace()
             if cashier_data:
                 CashierServices.create_cashier(cashier_data)
 
