@@ -8,7 +8,6 @@ from .operator_service import OperatorServices
 from .payment_method_service import PaymentMethodServices
 from .product_purchase_order_service import ProductPurchaseOrderServices
 from .product_service import ProductServices
-from .provider_product_service import ProviderProductServices
 from .provider_service import ProviderServices
 from .purchase_order_service import PurchaseOrderServices
 from .table_service import TableServices

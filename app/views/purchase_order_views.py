@@ -1,3 +1,4 @@
+from sqlalchemy.exc import DataError
 from http import HTTPStatus
 
 from flask import Blueprint, jsonify, request
@@ -31,6 +32,9 @@ def create():
 
     except FkNotFoundError as e:
         return e.message
+
+    except DataError as _:
+        return {"error": "data error, please check and try again. note: date pattern: mm/dd/aaaa "}
 
 @bp.route("/purchase_order", methods=["GET"])
 @jwt_required()

@@ -17,7 +17,6 @@ import ipdb
 class AccountServices:
 
     required_fields = [
-        "date",
         "id_cashier",
         "id_waiter",
         "id_table",
@@ -64,7 +63,6 @@ class AccountServices:
                 {
                     "id": product.id,
                     "name": product.name,
-                    "description": product.description,
                     "price": product.price,
                     "quantity": AccountProductModel.query.filter(
                         and_(
@@ -74,14 +72,14 @@ class AccountServices:
                     )
                     .first()
                     .quantity,
-                    "subtotal": product.price * AccountProductModel.query.filter(
+                    "subtotal": round(product.price * AccountProductModel.query.filter(
                         and_(
                             AccountProductModel.id_product == product.id,
                             AccountProductModel.id_account == bill.id,
                         )
                     )
                     .first()
-                    .quantity,
+                    .quantity, 2)
                 }
                 for product in bill.product_list
             ],
@@ -108,7 +106,6 @@ class AccountServices:
                     {
                         "id": product.id,
                         "name": product.name,
-                        "description": product.description,
                         "price": product.price,
                         "quantity": AccountProductModel.query.filter(
                             and_(
@@ -118,14 +115,14 @@ class AccountServices:
                         )
                         .first()
                         .quantity,
-                        "subtotal": product.price * AccountProductModel.query.filter(
-                            and_(
+                        "subtotal": round(product.price * AccountProductModel.query.filter(
+                        and_(
                             AccountProductModel.id_product == product.id,
                             AccountProductModel.id_account == bill.id,
                         )
                     )
                     .first()
-                    .quantity,
+                    .quantity, 2)
                     }
                     for product in bill.product_list
                 ],
@@ -154,7 +151,6 @@ class AccountServices:
                 {
                     "id": product.id,
                     "name": product.name,
-                    "description": product.description,
                     "price": product.price,
                     "quantity": AccountProductModel.query.filter(
                         and_(
@@ -164,14 +160,14 @@ class AccountServices:
                     )
                     .first()
                     .quantity,
-                    "subtotal": product.price * AccountProductModel.query.filter(
+                    "subtotal": round(product.price * AccountProductModel.query.filter(
                         and_(
                             AccountProductModel.id_product == product.id,
                             AccountProductModel.id_account == bill.id,
                         )
                     )
                     .first()
-                    .quantity,
+                    .quantity, 2)
                 }
                 for product in bill.product_list
             ],
@@ -218,7 +214,6 @@ class AccountServices:
                 {
                     "id": product.id,
                     "name": product.name,
-                    "description": product.description,
                     "price": product.price,
                     "quantity": AccountProductModel.query.filter(
                         and_(
@@ -228,14 +223,14 @@ class AccountServices:
                     )
                     .first()
                     .quantity,
-                    "subtotal": product.price * AccountProductModel.query.filter(
+                    "subtotal": round(product.price * AccountProductModel.query.filter(
                         and_(
                             AccountProductModel.id_product == product.id,
                             AccountProductModel.id_account == bill.id,
                         )
                     )
                     .first()
-                    .quantity,
+                    .quantity, 2)
                 }
                 for product in bill.product_list
             ],
@@ -278,7 +273,6 @@ class AccountServices:
                 {
                     "id": product.id,
                     "name": product.name,
-                    "description": product.description,
                     "price": product.price,
                     "quantity": AccountProductModel.query.filter(
                         and_(
@@ -288,14 +282,14 @@ class AccountServices:
                     )
                     .first()
                     .quantity,
-                    "subtotal": product.price * AccountProductModel.query.filter(
+                    "subtotal": round(product.price * AccountProductModel.query.filter(
                         and_(
                             AccountProductModel.id_product == product.id,
                             AccountProductModel.id_account == bill.id,
                         )
                     )
                     .first()
-                    .quantity,
+                    .quantity, 2)
                     
                     
                 }

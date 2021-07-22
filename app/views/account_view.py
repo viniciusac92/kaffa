@@ -1,4 +1,4 @@
-from sqlalchemy import exc
+from sqlalchemy.exc import DataError
 from ..services import AccountServices
 from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, FkNotFoundError
 from sqlalchemy.exc import IntegrityError
@@ -30,6 +30,9 @@ def create():
 
     except FkNotFoundError as e:
         return e.message
+
+    except DataError as _:
+        return {"error": "data error, please check and try again. note: date pattern: mm/dd/aaaa "}
 
 
 @bp.route("/account", methods=["GET"])

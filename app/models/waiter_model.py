@@ -10,7 +10,8 @@ class WaiterModel(db.Model):
     id: int
     name: str
     cpf: str
-    account_list: list
+    id_user: int
+    # account_list: list
 
     __tablename__ = "waiters"
 

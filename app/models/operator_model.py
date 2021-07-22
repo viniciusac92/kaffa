@@ -10,7 +10,8 @@ class OperatorModel(db.Model):
     id: int
     name: str
     cpf: str
-    cashier_list: list
+    id_user: int
+    # cashier_list: list
 
     __tablename__ = "operators"
 

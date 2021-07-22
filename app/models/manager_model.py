@@ -9,6 +9,8 @@ from dataclasses import dataclass
 class ManagerModel(db.Model):
     id: int
     name: str
+    cpf: str
+    id_user: int
 
     __tablename__ = "managers"
 

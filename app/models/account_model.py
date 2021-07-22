@@ -4,6 +4,8 @@ from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
 from datetime import date
 
+from sqlalchemy.sql.sqltypes import TIMESTAMP
+
 from .account_product import AccountProductModel
 
 from app.configs.database import db
@@ -24,7 +26,8 @@ class AccountModel(db.Model):
     __tablename__ = "accounts"
 
     id = Column(Integer, primary_key=True)
-    date = Column(Date, nullable=False)
+    # date = Column(Date, default=date.today().strftime("%d/%m/%Y"))
+    date = Column(Date, default=date.today().strftime("%m/%d/%Y"))
     id_cashier = Column(Integer, ForeignKey("cashiers.id"), nullable=False)
     id_waiter = Column(Integer, ForeignKey("waiters.id"), nullable=False)
     id_table = Column(Integer, ForeignKey("tables.id"), nullable=False)

@@ -85,7 +85,6 @@ class UserServices:
             "type": type,
             "username": user.username,
             "cpf": info_user.cpf,
-            "password": user.password_hash,
         }
 
     @staticmethod
