@@ -85,10 +85,13 @@ def create_fake_purchase_order(amount: int):
 
     providers = ProviderServices.get_all_providers()
     managers = ManagerServices.get_all_managers()
+    import ipdb
+
+    ipdb.set_trace()
 
     return {
-        "id_manager": fake.random_int(min=1, max=len(managers)),
-        "id_provider": fake.random_int(min=1, max=len(providers)),
+        "id_manager": fake.random_int(min=1, max=managers[len(managers) - 1].id),
+        "id_provider": fake.random_int(min=1, max=providers[len(providers) - 1].id),
     }
 
 
