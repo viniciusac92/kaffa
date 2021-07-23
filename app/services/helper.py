@@ -85,12 +85,9 @@ def create_fake_purchase_order(amount: int):
 
     providers = ProviderServices.get_all_providers()
     managers = ManagerServices.get_all_managers()
-    import ipdb
-
-    ipdb.set_trace()
 
     return {
-        "id_manager": fake.random_int(min=1, max=managers[len(managers) - 1].id),
+        "id_manager": fake.random_int(min=1, max=managers[len(managers) - 1]['id']),
         "id_provider": fake.random_int(min=1, max=providers[len(providers) - 1].id),
     }
 
@@ -161,10 +158,12 @@ def create_fake_account(amount: int):
     payment_methods = PaymentMethodServices.get_all_payment_method()
 
     return {
-        "id_cashier": fake.random_int(min=1, max=len(cashiers)),
-        "id_waiter": fake.random_int(min=1, max=len(waiters)),
-        "id_table": fake.random_int(min=1, max=len(tables)),
-        "id_payment_method": fake.random_int(min=1, max=len(payment_methods)),
+        "id_cashier": fake.random_int(min=1, max=cashiers[len(cashiers) - 1].id),
+        "id_waiter": fake.random_int(min=1, max=waiters[len(waiters) - 1].id),
+        "id_table": fake.random_int(min=1, max=tables[len(tables) - 1].id),
+        "id_payment_method": fake.random_int(
+            min=1, max=payment_methods[len(payment_methods) - 1].id
+        ),
     }
 
 
