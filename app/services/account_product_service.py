@@ -1,9 +1,21 @@
-from app.custom_errors.not_found import NotFoundError
-from app.custom_errors import required_key
-from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import AccountProductModel, AccountModel
-from . import (add_commit, get_all, get_one, verify_recieved_keys,
-               update_model, delete_commit, verify_missing_key)
+from ..custom_errors import (
+    AccountClosedError,
+    MissingKeyError,
+    OutOfStockError,
+    RequiredKeyError,
+    FkNotFoundError,
+    NotFoundError
+)
+from ..models import AccountModel, AccountProductModel, ProductModel
+from .helper import (
+    add_commit,
+    delete_commit,
+    get_all,
+    get_one,
+    update_model,
+    verify_missing_key,
+    verify_recieved_keys,
+)
 
 
 class AccountProductServices:
@@ -17,8 +29,21 @@ class AccountProductServices:
             raise MissingKeyError(data, AccountProductServices.required_fields)
 
         if verify_recieved_keys(data, AccountProductServices.required_fields):
-            raise RequiredKeyError(
-                data, AccountProductServices.required_fields)
+            raise RequiredKeyError(data, AccountProductServices.required_fields)
+
+        if not get_one(AccountModel, data["id_account"]):
+            raise FkNotFoundError("id_account")
+
+        if not get_one(ProductModel, data["id_product"]):
+            raise FkNotFoundError("id_product")
+
+        product: ProductModel = ProductModel.query.get(data["id_product"])
+        if data["quantity"] > product.stock:
+            raise OutOfStockError(product.name)
+
+        account: AccountModel = AccountModel.query.get(data["id_account"])
+        if account.status != "opened":
+            raise AccountClosedError()
 
         account_product: AccountProductModel = AccountProductModel(**data)
 
@@ -34,17 +59,29 @@ class AccountProductServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(AccountProductModel, id)
+        account_product = get_one(AccountProductModel, id)
+
+        if not account_product:
+            raise NotFoundError
+
+        return account_product
 
     @staticmethod
     def update_account_product(data: dict, id):
 
         if verify_recieved_keys(data, AccountProductServices.required_fields):
-            raise RequiredKeyError(
-                data, AccountProductServices.required_fields)
+            raise RequiredKeyError(data, AccountProductServices.required_fields)
 
         if not get_one(AccountProductModel, id):
             raise NotFoundError
+
+        if data.get("id_account"):
+            if not get_one(AccountModel, data["id_account"]):
+                raise FkNotFoundError("id_account")
+
+        if data.get("id_product"):
+            if not get_one(ProductModel, data["id_product"]):
+                raise FkNotFoundError("id_product")
 
         account_product = get_one(AccountProductModel, id)
         update_model(account_product, data)

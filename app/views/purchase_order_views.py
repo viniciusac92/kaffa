@@ -1,10 +1,11 @@
-from ..services import PurchaseOrderServices
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
-
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask import Blueprint, request, jsonify
+from sqlalchemy.exc import DataError
 from http import HTTPStatus
 
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
+
+from ..custom_errors import MissingKeyError, NotFoundError, RequiredKeyError, PurchaseClosedError, FkNotFoundError
+from ..services import PurchaseOrderServices
 
 bp = Blueprint('bp_purchase_order', __name__, url_prefix='/api')
 
@@ -18,7 +19,10 @@ def create():
     data = request.get_json()
 
     try:
-        return jsonify(PurchaseOrderServices.create_purchase_order(data)), HTTPStatus.CREATED
+        return (
+            jsonify(PurchaseOrderServices.create_purchase_order(data)),
+            HTTPStatus.CREATED,
+        )
 
     except MissingKeyError as e:
         return e.message
@@ -26,6 +30,11 @@ def create():
     except RequiredKeyError as e:
         return e.message
 
+    except FkNotFoundError as e:
+        return e.message
+
+    except DataError as _:
+        return {"error": "data error, please check and try again. note: date pattern: mm/dd/aaaa "}
 
 @bp.route("/purchase_order", methods=["GET"])
 @jwt_required()
@@ -53,12 +62,18 @@ def update(id):
     data = request.get_json()
 
     try:
-        return jsonify(PurchaseOrderServices.update_purchase_order(data, id)), HTTPStatus.OK
+        return (
+            jsonify(PurchaseOrderServices.update_purchase_order(data, id)),
+            HTTPStatus.OK,
+        )
 
     except NotFoundError as e:
         return e.message
 
     except RequiredKeyError as e:
+        return e.message
+
+    except PurchaseClosedError as e:
         return e.message
 
 
@@ -74,4 +89,25 @@ def delete(id):
     except NotFoundError as e:
         return e.message
 
+    except FkNotFoundError as e:
+        return e.message
+
     return "", HTTPStatus.NO_CONTENT
+
+@bp.route("/purchase_order/<int:id>/close_order", methods=["GET"])
+@jwt_required()
+def close_purchase_order(id):
+    if get_jwt_identity()["type"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+
+    try:
+        return (
+            jsonify(PurchaseOrderServices.close_purchase_order(id)),
+            HTTPStatus.OK,
+        )
+
+    except NotFoundError as e:
+        return e.message
+
+    except RequiredKeyError as e:
+        return e.message

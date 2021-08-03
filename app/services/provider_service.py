@@ -1,14 +1,21 @@
-from app.custom_errors.not_found import NotFoundError
-from app.custom_errors import required_key
-from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, UniqueKeyError
 from ..models import ProviderModel
-from . import (add_commit, get_all, get_one, verify_recieved_keys,
-               update_model, delete_commit, verify_missing_key)
+from .helper import (
+    add_commit,
+    delete_commit,
+    get_all,
+    get_one,
+    update_model,
+    verify_missing_key,
+    verify_recieved_keys,
+    verify_unique_keys,
+)
 
 
 class ProviderServices:
 
     required_fields = ["trading_name", "cnpj", "phone"]
+    unique_keys = ["cnpj", "phone"]
 
     @staticmethod
     def create_provider(data: dict):
@@ -18,6 +25,9 @@ class ProviderServices:
 
         if verify_recieved_keys(data, ProviderServices.required_fields):
             raise RequiredKeyError(data, ProviderServices.required_fields)
+
+        if verify_unique_keys(data, ProviderModel, ProviderServices.unique_keys):
+            raise UniqueKeyError(ProviderServices.unique_keys)
 
         provider = ProviderModel(**data)
 
@@ -33,7 +43,12 @@ class ProviderServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(ProviderModel, id)
+        provider = get_one(ProviderModel, id)
+
+        if not provider:
+            raise NotFoundError
+
+        return provider
 
     @staticmethod
     def update_provider(data: dict, id):

@@ -10,7 +10,7 @@ from app.configs.database import db
 class TableModel(db.Model):
     id: int
     number: int
-    account_list: list
+    # account_list: list
 
     __tablename__ = "tables"
 

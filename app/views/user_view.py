@@ -1,23 +1,33 @@
-from ..services import UserServices
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
-
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask import Blueprint, request, jsonify
 from http import HTTPStatus
+
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from sqlalchemy.exc import IntegrityError
+
+from ..custom_errors import (
+    MissingKeyError,
+    NotFoundError,
+    RequiredKeyError,
+    UniqueKeyError,
+)
+from ..services import UserServices
 
 bp = Blueprint('bp_user', __name__, url_prefix='/api')
 
 
 @bp.route("/user", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def create():
-    # if get_jwt_identity()["type"] != 1:
-    #     return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+    if get_jwt_identity()["type"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     data = request.get_json()
 
     try:
         return jsonify(UserServices.create_user(data)), HTTPStatus.CREATED
+
+    except UniqueKeyError as e:
+        return e.message
 
     except MissingKeyError as e:
         return e.message

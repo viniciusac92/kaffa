@@ -1,5 +1,5 @@
 from ..services import OperatorCashierServices
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, FkNotFoundError
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, request, jsonify
@@ -26,6 +26,8 @@ def create():
     except RequiredKeyError as e:
         return e.message
 
+    except FkNotFoundError as e:
+        return e.message
 
 @bp.route("/operator_cashier", methods=["GET"])
 @jwt_required()
@@ -59,6 +61,9 @@ def update(id):
         return e.message
 
     except RequiredKeyError as e:
+        return e.message
+
+    except FkNotFoundError as e:
         return e.message
 
 

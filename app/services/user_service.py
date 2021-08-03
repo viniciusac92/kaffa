@@ -1,18 +1,28 @@
 from app.custom_errors.not_found import NotFoundError
-from app.custom_errors import required_key
-from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import UserModel
-from . import (add_commit, get_all, get_one, verify_recieved_keys,
-               update_model, delete_commit, verify_missing_key)
-from app.services.waiter_service import WaiterServices
 from app.services.manager_service import ManagerServices
 from app.services.operator_service import OperatorServices
+from app.services.waiter_service import WaiterServices
 from ipdb import set_trace
+
+from ..custom_errors import MissingKeyError, RequiredKeyError, UniqueKeyError
+from ..models import UserModel, ManagerModel, OperatorModel, WaiterModel
+from .helper import (
+    add_commit,
+    delete_commit,
+    get_all,
+    get_one,
+    update_model,
+    verify_missing_key,
+    verify_recieved_keys,
+    verify_unique_keys,
+)
 
 
 class UserServices:
 
     required_fields = ["username", "type", "password", "name", "cpf"]
+    user_unique_keys = ["username"]
+    worker_unique_keys = ["cpf"]
 
     @staticmethod
     def create_user(data: dict):
@@ -22,6 +32,21 @@ class UserServices:
 
         if verify_recieved_keys(data, UserServices.required_fields):
             raise RequiredKeyError(data, UserServices.required_fields)
+
+        if verify_unique_keys(data, UserModel, UserServices.user_unique_keys):
+            raise UniqueKeyError(UserServices.user_unique_keys)
+
+        if data["type"] == 1:
+            if verify_unique_keys(data, ManagerModel, UserServices.worker_unique_keys):
+                raise UniqueKeyError(UserServices.worker_unique_keys)
+
+        if data["type"] == 2:
+            if verify_unique_keys(data, WaiterModel, UserServices.worker_unique_keys):
+                raise UniqueKeyError(UserServices.worker_unique_keys)
+
+        if data["type"] == 3:
+            if verify_unique_keys(data, OperatorModel, UserServices.worker_unique_keys):
+                raise UniqueKeyError(UserServices.worker_unique_keys)
 
         name = data.pop('name')
         cpf = data.pop('cpf')
@@ -35,15 +60,18 @@ class UserServices:
 
         if data["type"] == 1:
             info_user = ManagerServices.create_manager(
-                {"name": name, "cpf": cpf, "id_user": user.id})
+                {"name": name, "cpf": cpf, "id_user": user.id}
+            )
 
         if data["type"] == 2:
             info_user = WaiterServices.create_waiter(
-                {"name": name, "cpf": cpf, "id_user": user.id})
+                {"name": name, "cpf": cpf, "id_user": user.id}
+            )
 
         if data["type"] == 3:
             info_user = OperatorServices.create_operator(
-                {"name": name, "cpf": cpf, "id_user": user.id})
+                {"name": name, "cpf": cpf, "id_user": user.id}
+            )
 
         if user.type == 1:
             type = "Manager"
@@ -57,7 +85,6 @@ class UserServices:
             "type": type,
             "username": user.username,
             "cpf": info_user.cpf,
-            "password": user.password_hash
         }
 
     @staticmethod
@@ -85,7 +112,20 @@ class UserServices:
         if not get_one(UserModel, id):
             raise NotFoundError
 
-        user = get_one(UserModel, id)
+        user: UserModel = get_one(UserModel, id)
+
+        if user.type == 1:
+            manager = ManagerModel.query.filter(ManagerModel.id_user == user.id).first()
+            ManagerServices.delete_manager(manager.id)
+
+        if user.type == 2:
+            waiter = WaiterModel.query.filter(WaiterModel.id_user == user.id).first()
+            WaiterServices.delete_waiter(waiter.id)
+
+        if user.type == 3:
+            operator = OperatorModel.query.filter(OperatorModel.id_user == user.id).first()
+            OperatorServices.delete_operator(operator.id)
+
         delete_commit(user)
 
     @staticmethod
@@ -95,6 +135,7 @@ class UserServices:
     @staticmethod
     def get_by_id(id):
         user = get_one(UserModel, id)
+        
         if not user:
             raise NotFoundError
 

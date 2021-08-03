@@ -1,17 +1,27 @@
 from sqlalchemy import and_
 
-from app.custom_errors.not_found import NotFoundError
-from app.custom_errors import required_key
-from ..custom_errors import MissingKeyError, RequiredKeyError
-from ..models import AccountModel, AccountProductModel, WaiterModel, PaymentMethodModel
-from . import (add_commit, get_all, get_one, verify_recieved_keys,
-               update_model, delete_commit, verify_missing_key)
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, FkNotFoundError
+from ..models import AccountModel, AccountProductModel, PaymentMethodModel, WaiterModel, CashierModel, TableModel
+from .helper import (
+    add_commit,
+    delete_commit,
+    get_all,
+    get_one,
+    update_model,
+    verify_missing_key,
+    verify_recieved_keys,
+)
 
+import ipdb
 
 class AccountServices:
 
-    required_fields = ["date", "id_cashier",
-                       "id_waiter", "id_table", "id_payment_method"]
+    required_fields = [
+        "id_cashier",
+        "id_waiter",
+        "id_table",
+        "id_payment_method",
+    ]
 
     @staticmethod
     def create_account(data: dict):
@@ -22,11 +32,21 @@ class AccountServices:
         if verify_recieved_keys(data, AccountServices.required_fields):
             raise RequiredKeyError(data, AccountServices.required_fields)
 
+        if not get_one(CashierModel, data["id_cashier"]):
+            raise FkNotFoundError("id_cashier")
+
+        if not get_one(WaiterModel, data["id_waiter"]):
+            raise FkNotFoundError("id_waiter")
+
+        if not get_one(TableModel, data["id_table"]):
+            raise FkNotFoundError("id_table")
+
+        if not get_one(PaymentMethodModel, data["id_payment_method"]):
+            raise FkNotFoundError("id_payment_method")
+
         account = AccountModel(**data)
 
         add_commit(account)
-
-        # return get_one(AccountModel, account.id)
 
         bill = get_one(AccountModel, account.id)
 
@@ -37,16 +57,32 @@ class AccountServices:
             "waiter": WaiterModel.query.get(bill.id_waiter).name,
             "id_table": bill.id_table,
             "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
+            "status": bill.status,
+            "total_value": bill.total_value,
             "product_list": [
                 {
                     "id": product.id,
                     "name": product.name,
-                    "description": product.description,
                     "price": product.price,
-                    "quantity": AccountProductModel.query.filter(and_(AccountProductModel.id_product == product.id, AccountProductModel.id_account == bill.id)).first().quantity
+                    "quantity": AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
+                    "subtotal": round(product.price * AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity, 2)
                 }
                 for product in bill.product_list
-            ]
+            ],
         }
 
     @staticmethod
@@ -61,17 +97,35 @@ class AccountServices:
                 "id_cashier": bill.id_cashier,
                 "waiter": WaiterModel.query.get(bill.id_waiter).name,
                 "id_table": bill.id_table,
-                "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
+                "payment_method": PaymentMethodModel.query.get(
+                    bill.id_payment_method
+                ).name,
+                "status": bill.status,
+                "total_value": bill.total_value,
                 "product_list": [
                     {
                         "id": product.id,
                         "name": product.name,
-                        "description": product.description,
                         "price": product.price,
-                        "quantity": AccountProductModel.query.filter(and_(AccountProductModel.id_product == product.id, AccountProductModel.id_account == bill.id)).first().quantity
+                        "quantity": AccountProductModel.query.filter(
+                            and_(
+                                AccountProductModel.id_product == product.id,
+                                AccountProductModel.id_account == bill.id,
+                            )
+                        )
+                        .first()
+                        .quantity,
+                        "subtotal": round(product.price * AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity, 2)
                     }
                     for product in bill.product_list
-                ]
+                ],
             }
             for bill in bill_list
         ]
@@ -81,6 +135,9 @@ class AccountServices:
 
         bill = get_one(AccountModel, id)
 
+        if not bill:
+            raise NotFoundError
+
         return {
             "id": bill.id,
             "date": bill.date,
@@ -88,16 +145,32 @@ class AccountServices:
             "waiter": WaiterModel.query.get(bill.id_waiter).name,
             "id_table": bill.id_table,
             "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
+            "status": bill.status,
+            "total_value": bill.total_value,
             "product_list": [
                 {
                     "id": product.id,
                     "name": product.name,
-                    "description": product.description,
                     "price": product.price,
-                    "quantity": AccountProductModel.query.filter(and_(AccountProductModel.id_product == product.id, AccountProductModel.id_account == bill.id)).first().quantity
+                    "quantity": AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
+                    "subtotal": round(product.price * AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity, 2)
                 }
                 for product in bill.product_list
-            ]
+            ],
         }
 
     @staticmethod
@@ -109,29 +182,58 @@ class AccountServices:
         if not get_one(AccountModel, id):
             raise NotFoundError
 
-        user = get_one(AccountModel, id)
-        update_model(user, data)
+        if data.get("id_cashier"):
+            if not get_one(CashierModel, data["id_cashier"]):
+                raise FkNotFoundError("id_cashier")
 
-        # return get_one(AccountModel, id)
+        if data.get("id_waiter"): 
+            if not get_one(WaiterModel, data["id_waiter"]):
+                raise FkNotFoundError("id_waiter")
+
+        if data.get("id_table"): 
+            if not get_one(TableModel, data["id_table"]):
+                raise FkNotFoundError("id_table")
+
+        if data.get("id_payment_method"): 
+            if not get_one(PaymentMethodModel, data["id_payment_method"]):
+                raise FkNotFoundError("id_payment_method")
+
         bill = get_one(AccountModel, id)
+        update_model(bill, data)
 
         return {
             "id": bill.id,
-            "data": bill.data,
+            "date": bill.date,
             "id_cashier": bill.id_cashier,
             "waiter": WaiterModel.query.get(bill.id_waiter).name,
             "id_table": bill.id_table,
             "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
+            "status": bill.status,
+            "total_value": bill.total_value,
             "product_list": [
                 {
                     "id": product.id,
                     "name": product.name,
-                    "description": product.description,
                     "price": product.price,
-                    "quantity": AccountProductModel.query.filter(and_(AccountProductModel.id_product == product.id, AccountProductModel.id_account == bill.id)).first().quantity
+                    "quantity": AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
+                    "subtotal": round(product.price * AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity, 2)
                 }
                 for product in bill.product_list
-            ]
+            ],
         }
 
     @staticmethod
@@ -146,3 +248,51 @@ class AccountServices:
     @staticmethod
     def found_account(username):
         return AccountModel.query.filter_by(username=username).first()
+
+    @staticmethod
+    def close_account(id):
+
+        bill: AccountModel = get_one(AccountModel, id)
+
+        if not bill:
+            raise NotFoundError
+
+        bill.close_bill()
+        update_model(bill, {"is_finished": True})
+
+        return {
+            "id": bill.id,
+            "date": bill.date,
+            "id_cashier": bill.id_cashier,
+            "waiter": WaiterModel.query.get(bill.id_waiter).name,
+            "id_table": bill.id_table,
+            "payment_method": PaymentMethodModel.query.get(bill.id_payment_method).name,
+            "status": bill.status,
+            "total_value": bill.total_value,
+            "product_list": [
+                {
+                    "id": product.id,
+                    "name": product.name,
+                    "price": product.price,
+                    "quantity": AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity,
+                    "subtotal": round(product.price * AccountProductModel.query.filter(
+                        and_(
+                            AccountProductModel.id_product == product.id,
+                            AccountProductModel.id_account == bill.id,
+                        )
+                    )
+                    .first()
+                    .quantity, 2)
+                    
+                    
+                }
+                for product in bill.product_list
+            ],
+        }

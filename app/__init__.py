@@ -1,9 +1,8 @@
 from environs import Env
 from flask import Flask
 
-
 from app import views
-from app.configs import commands, database, migrations, jwt
+from app.configs import commands, database, jwt, migrations
 
 env = Env()
 env.read_env()
@@ -18,7 +17,7 @@ def create_app():
     app.config["JWT_SECRET_KEY"] = env("SECRET_KEY")
     app.config['CORS_ORIGINS'] = ['https://localhost:5000/']
     app.config['CORS_HEADERS'] = 'Content-Type, auth'
-    app.config['CORS_RESOURCES'] = {r"/apis/*":{"origins":"http://localhost:5000"}}
+    app.config['CORS_RESOURCES'] = {r"/apis/*": {"origins": "http://localhost:5000"}}
     app.config['CORS_METHODS'] = "GET,POST,PATCH,DELETE"
     app.config['CORS_SUPPORTS_CREDENTIALS'] = True
 
@@ -27,5 +26,6 @@ def create_app():
     migrations.init_app(app)
     views.init_app(app)
     jwt.init_app(app)
+    commands.init_app(app)
 
     return app

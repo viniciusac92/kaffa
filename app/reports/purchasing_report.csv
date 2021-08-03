@@ -1,0 +1,11 @@
+purchase_order_id,provider,cnpj,manager_in_charge,product,product_stock_amount,quantity_to_buy,last_unit_purchase_price,costing_estimate
+1,Potter Ltd,14209742851334,Heather Harris,Folhado de frango&5J*AQgcF,32,7,8.55,59.85000000000001
+2,"Allen, Lowe and Stevens",12746097758390,William Fleming,Duplo$1&MS8WnZ,21,10,29.99,299.9
+3,"Arias, Mccarthy and Kim",89415825160663,Roy Brown,Irish coffee$!yQ9CKk),2,2,47.63,95.26
+4,Macias Ltd,43797727171881,Heather Harris,Capuccino7YJ(*Qoz%,14,2,75.58,151.16
+5,Hoffman PLC,99338398987863,William Fleming,Irish coffee(00nPXIeV,36,2,22.21,44.42
+6,Potter Ltd,14209742851334,Heather Harris,Irish coffee(00nPXIeV,36,4,22.21,88.84
+7,Butler and Sons,17542045459955,Scott Kim,Croissant9asV&e!f(,26,8,40.31,322.48
+8,Butler and Sons,17542045459955,Roy Brown,Capuccino7YJ(*Qoz%,14,2,75.58,151.16
+9,"Kirk, Lynch and Frazier",75634527621924,Scott Kim,Bolo de fubáE_O8YmlB!,16,10,68.26,682.6
+10,Hoffman PLC,99338398987863,Kenneth Graham,Irish coffee(00nPXIeV,36,9,22.21,199.89000000000001

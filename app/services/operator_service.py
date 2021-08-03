@@ -1,11 +1,16 @@
-from app.custom_errors.not_found import NotFoundError
-from app.custom_errors import required_key
-from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, ImmutableAttrError
 from ..models import OperatorModel
-from . import (add_commit, get_all, get_one, verify_recieved_keys,
-               update_model, delete_commit, verify_missing_key)
+from .helper import (
+    add_commit,
+    delete_commit,
+    get_all,
+    get_one,
+    update_model,
+    verify_missing_key,
+    verify_recieved_keys,
+)
 
-
+import ipdb
 class OperatorServices:
 
     required_fields = ["name", "cpf", "id_user"]
@@ -33,7 +38,12 @@ class OperatorServices:
     @staticmethod
     def get_by_id(id):
 
-        return get_one(OperatorModel, id)
+        operator = get_one(OperatorModel, id)
+
+        if not operator:
+            raise NotFoundError
+
+        return operator
 
     @staticmethod
     def update_operator(data: dict, id):
@@ -43,6 +53,9 @@ class OperatorServices:
 
         if not get_one(OperatorModel, id):
             raise NotFoundError
+
+        if data.get("id_user"):
+            raise ImmutableAttrError("id_user")
 
         operator = get_one(OperatorModel, id)
         update_model(operator, data)
@@ -56,4 +69,5 @@ class OperatorServices:
             raise NotFoundError
 
         operator = get_one(OperatorModel, id)
+
         delete_commit(operator)

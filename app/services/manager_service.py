@@ -1,14 +1,22 @@
-from app.custom_errors.not_found import NotFoundError
-from app.custom_errors import required_key
-from ..custom_errors import MissingKeyError, RequiredKeyError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, ImmutableAttrError
 from ..models import ManagerModel
-from . import (add_commit, get_all, get_one, verify_recieved_keys,
-               update_model, delete_commit, verify_missing_key)
+from .helper import (
+    add_commit,
+    delete_commit,
+    get_all,
+    get_one,
+    update_model,
+    verify_missing_key,
+    verify_recieved_keys,
+    verify_unique_keys,
+)
 
+from http import HTTPStatus
 
 class ManagerServices:
 
     required_fields = ["name", "cpf", "id_user"]
+    unique_keys = ["cpf"]
 
     @staticmethod
     def create_manager(data: dict):
@@ -18,7 +26,7 @@ class ManagerServices:
 
         if verify_recieved_keys(data, ManagerServices.required_fields):
             raise RequiredKeyError(data, ManagerServices.required_fields)
-
+            
         manager = ManagerModel(**data)
 
         add_commit(manager)
@@ -28,12 +36,32 @@ class ManagerServices:
     @staticmethod
     def get_all_managers():
 
-        return get_all(ManagerModel)
+        manager_list = get_all(ManagerModel)
+
+        return [
+            {
+                "id": manager.id,
+                "name": manager.name,
+                "cpf": manager.cpf,
+                "id_user": manager.id_user
+            }
+            for manager in manager_list
+        ]
 
     @staticmethod
     def get_by_id(id):
 
-        return get_one(ManagerModel, id)
+        manager: ManagerModel = get_one(ManagerModel, id)
+
+        if not manager:
+            raise NotFoundError
+        
+        return {
+            "id": manager.id,
+            "name": manager.name,
+            "cpf": manager.cpf,
+            "id_user": manager.id_user
+        }
 
     @staticmethod
     def update_manager(data: dict, id):
@@ -43,6 +71,9 @@ class ManagerServices:
 
         if not get_one(ManagerModel, id):
             raise NotFoundError
+
+        if data.get("id_user"):
+            raise ImmutableAttrError("id_user")
 
         manager = get_one(ManagerModel, id)
         update_model(manager, data)

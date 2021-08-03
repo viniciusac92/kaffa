@@ -31,7 +31,7 @@ def create():
 @bp.route("/cashier", methods=["GET"])
 @jwt_required()
 def get():
-    if get_jwt_identity()["type"] != 1:
+    if get_jwt_identity()["type"] == 2:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     id = request.args.get("id")
@@ -48,7 +48,9 @@ def get():
 @bp.route("/cashier/<int:id>", methods=["PUT", "PATCH"])
 @jwt_required()
 def update(id):
-
+    if get_jwt_identity()["type"] != 1:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+    
     data = request.get_json()
 
     try:
@@ -74,3 +76,42 @@ def delete(id):
         return e.message
 
     return "", HTTPStatus.NO_CONTENT
+
+
+
+@bp.route("/cashier/<int:id>/cash_balance", methods=["GET"])
+@jwt_required()
+def cash_balance(id):
+
+    if get_jwt_identity()["type"] != 3:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+
+    try:
+        return jsonify(CashierServices.cash_balance(id)), HTTPStatus.OK
+
+    except NotFoundError as e:
+        return e.message
+
+    except RequiredKeyError as e:
+        return e.message
+
+@bp.route("/cashier/<int:id>/cash_withdrawal", methods=["GET"])
+@jwt_required()
+def cash_withdrawal(id):
+    
+    if get_jwt_identity()["type"] != 3:
+        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
+
+    data = request.get_json()
+
+    try:
+        return jsonify(CashierServices.cash_withdrawal(data, id)), HTTPStatus.OK
+
+    except NotFoundError as e:
+        return e.message
+
+    except RequiredKeyError as e:
+        return e.message
+
+    except MissingKeyError as e:
+        return e.message

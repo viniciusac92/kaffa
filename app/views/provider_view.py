@@ -1,5 +1,5 @@
 from ..services import ProviderServices
-from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
+from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError, UniqueKeyError
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, request, jsonify
@@ -26,6 +26,8 @@ def create():
     except RequiredKeyError as e:
         return e.message
 
+    except UniqueKeyError as e:
+        return e.message
 
 @bp.route("/provider", methods=["GET"])
 @jwt_required()
@@ -38,7 +40,7 @@ def get():
         if id:
             return jsonify(ProviderServices.get_by_id(id))
 
-        return jsonify(ProviderServices.get_all_provideres()), HTTPStatus.OK
+        return jsonify(ProviderServices.get_all_providers()), HTTPStatus.OK
 
     except NotFoundError as e:
         return e.message

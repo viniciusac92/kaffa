@@ -1,3 +1,4 @@
+from app.custom_errors.unique_key import UniqueKeyError
 from ..services import ProductServices
 from ..custom_errors import MissingKeyError, RequiredKeyError, NotFoundError
 
@@ -20,6 +21,9 @@ def create():
     try:
         return jsonify(ProductServices.create_product(data)), HTTPStatus.CREATED
 
+    except UniqueKeyError as e:
+        return e.message
+
     except MissingKeyError as e:
         return e.message
 
@@ -30,9 +34,6 @@ def create():
 @bp.route("/product", methods=["GET"])
 @jwt_required()
 def get():
-    if get_jwt_identity()["type"] != 1:
-        return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
-
     if get_jwt_identity()["type"] != 1:
         return {"message": "unauthorized"}, HTTPStatus.UNAUTHORIZED
 
